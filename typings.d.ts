@@ -1,5 +1,6 @@
 export type Taxi = {
   id: string;
+  isSharingLocation: boolean;
   available: boolean;
   location: {
     latitude: number;

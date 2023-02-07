@@ -5,6 +5,7 @@ export type RootStackParamList = {
   CreateNewTaxi: undefined;
   TaxiHome: { taxiRef: string };
   ClientHome: undefined;
+  TestingScreen: undefined;
 };
 
 export type RootStackScreenProps<T extends keyof RootStackParamList> =

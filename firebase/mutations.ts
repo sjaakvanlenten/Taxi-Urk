@@ -6,6 +6,7 @@ import { db } from "./firebaseConfig";
 export const pushNewTaxiRef = (data: FormData) => {
   return push(ref(db, "taxis"), {
     available: false,
+    isSharingLocation: false,
     location: {
       latitude: 0,
       longitude: 0,

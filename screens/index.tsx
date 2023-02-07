@@ -5,7 +5,7 @@ import { RootStackScreenProps } from "../navigation/types";
 
 const WelcomeScreen = () => {
   const navigation =
-    useNavigation<RootStackScreenProps<"TaxiHome">["navigation"]>();
+    useNavigation<RootStackScreenProps<"Welcome">["navigation"]>();
   return (
     <View style={styles.container}>
       <View style={{ height: 200, justifyContent: "space-between" }}>
@@ -20,6 +20,12 @@ const WelcomeScreen = () => {
           onPress={() => navigation.navigate("CreateNewTaxi")}
         >
           <Text style={styles.buttonText}>Ik ben een Taxi</Text>
+        </Pressable>
+        <Pressable
+          style={styles.button}
+          onPress={() => navigation.navigate("TestingScreen")}
+        >
+          <Text style={styles.buttonText}>Test suite</Text>
         </Pressable>
       </View>
     </View>

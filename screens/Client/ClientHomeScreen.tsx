@@ -1,4 +1,4 @@
-import { Platform, StyleSheet, Text, View } from "react-native";
+import { Dimensions, Platform, StyleSheet, Text, View } from "react-native";
 import React, { useEffect, useState } from "react";
 import MapView, { Marker } from "react-native-maps";
 import { ref, onChildChanged, get } from "firebase/database";
@@ -47,22 +47,19 @@ const TaxiHomeScreen: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      {Platform.OS == "android" && (
-        <MapView
-          style={styles.map}
-          initialRegion={{
-            latitude: 52.661909,
-            longitude: 5.614741,
-            latitudeDelta: 0.001,
-            longitudeDelta: 0.045,
-          }}
-        ></MapView>
-      )}
-      <FlashList
-        data={taxis}
-        renderItem={({ item }) => item.available && <Text>{item.name}</Text>}
-        estimatedItemSize={20}
-      />
+      <View
+        style={{
+          height: 200,
+          width: Dimensions.get("screen").width,
+          paddingHorizontal: 10,
+        }}
+      >
+        <FlashList
+          data={taxis}
+          renderItem={({ item }) => item.available && <Text>{item.name}</Text>}
+          estimatedItemSize={20}
+        />
+      </View>
     </View>
   );
 };

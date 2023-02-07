@@ -1,15 +1,13 @@
 import { useState, useEffect } from "react";
 import {
   Accuracy,
-  LocationObject,
+  LocationCallback,
   LocationSubscription,
   requestForegroundPermissionsAsync,
   watchPositionAsync,
 } from "expo-location";
 
-type Callback = (location: LocationObject) => void;
-
-export default (shouldTrack: boolean, callback: Callback) => {
+export default (shouldTrack: boolean, callback: LocationCallback) => {
   const [errorMsg, setErrorMsg] = useState(null);
 
   useEffect(() => {

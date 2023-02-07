@@ -7,15 +7,13 @@ import WelcomeScreen from "../screens";
 import CreateNewTaxiScreen from "../screens/Taxi/CreateNewTaxiScreen";
 import useTaxiDriverContext from "../context/taxiDriver-context";
 import { RootStackParamList } from "./types";
-import { Platform } from "react-native";
+import TestingScreen from "../screens/Test/TestingScreen";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigator = () => {
   const { taxiId } = useTaxiDriverContext();
-  if (Platform.OS === "web") {
-    console.log("hoahwefoe");
-  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator
@@ -46,6 +44,13 @@ const Navigator = () => {
           <Stack.Screen
             name="ClientHome"
             component={ClientHomeScreen}
+            options={{ headerShown: false }}
+          />
+        </Stack.Group>
+        <Stack.Group>
+          <Stack.Screen
+            name="TestingScreen"
+            component={TestingScreen}
             options={{ headerShown: false }}
           />
         </Stack.Group>
