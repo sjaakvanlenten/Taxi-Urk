@@ -2,10 +2,11 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Controller, Control } from "react-hook-form";
 import React from "react";
 import { FormData } from "../screens/Taxi/CreateNewTaxiScreen";
+import { colors } from "../themes/light";
 
 interface InputProps {
   control: Control<FormData, any>;
-  rules: {};
+  rules?: {};
   name: string;
   placeholder: string;
 }
@@ -33,6 +34,7 @@ const CustomInput: React.FC<InputProps> = ({
             ]}
           >
             <TextInput
+              textAlign="center"
               style={styles.input}
               value={value}
               onChangeText={onChange}
@@ -56,14 +58,16 @@ export default CustomInput;
 const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
-    width: "100%",
-
-    borderColor: "#e8e8e8",
-    borderWidth: 1,
-    borderRadius: 5,
+    alignSelf: "stretch",
+    borderColor: colors.greyBorder,
+    borderWidth: 2,
+    borderRadius: 20,
 
     padding: 10,
     marginVertical: 5,
   },
-  input: {},
+  input: {
+    fontSize: 15,
+    fontFamily: "OpenSans-semibold",
+  },
 });

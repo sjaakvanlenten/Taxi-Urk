@@ -1,10 +1,35 @@
-import { Pressable, StyleSheet, Text } from "react-native";
-import React from "react";
+import {
+  GestureResponderEvent,
+  Pressable,
+  StyleSheet,
+  Text,
+} from "react-native";
+import React, { ReactNode } from "react";
+import { colors } from "../themes/light";
 
-const CustomButton = ({ children, onPressHandler }) => {
+interface ButtonProps {
+  children: ReactNode;
+  onPressHandler: (event: GestureResponderEvent) => void;
+  active?: boolean;
+}
+
+const CustomButton = ({
+  children,
+  onPressHandler,
+  active = true,
+}: ButtonProps) => {
+  const activeButtonStyle = active
+    ? styles.activeButton
+    : styles.disabledButton;
+
+  const activeTextStyle = active ? styles.activeText : styles.disabledText;
   return (
-    <Pressable style={styles.button} onPress={onPressHandler}>
-      <Text style={styles.buttonText}>{children}</Text>
+    <Pressable
+      style={[styles.button, activeButtonStyle]}
+      onPress={onPressHandler}
+      disabled={!active}
+    >
+      <Text style={[styles.buttonText, activeTextStyle]}>{children}</Text>
     </Pressable>
   );
 };
@@ -13,15 +38,29 @@ export default CustomButton;
 
 const styles = StyleSheet.create({
   button: {
-    width: 200,
     height: 50,
-    borderRadius: 50,
-    backgroundColor: "royalblue",
+    width: "100%",
+    borderRadius: 20,
     justifyContent: "center",
     alignItems: "center",
   },
+  activeButton: {
+    backgroundColor: colors.black,
+  },
+  disabledButton: {
+    backgroundColor: "white",
+    borderColor: "#bababa",
+    borderWidth: 2,
+  },
   buttonText: {
+    fontFamily: "OpenSans-semibold",
+
+    fontSize: 15,
+  },
+  activeText: {
     color: "whitesmoke",
-    fontSize: 16,
+  },
+  disabledText: {
+    color: "#bababa",
   },
 });

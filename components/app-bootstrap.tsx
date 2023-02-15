@@ -1,11 +1,13 @@
 import { useState, useEffect, useCallback } from "react";
 import { StyleSheet } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
+import * as Font from "expo-font";
 
 import * as SplashScreen from "expo-splash-screen";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useTaxiDriverContext from "../context/taxiDriver-context";
+import { colors } from "../themes/light";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -14,20 +16,28 @@ export default function AppBootstrap({ children }) {
   const { setTaxiId } = useTaxiDriverContext();
 
   useEffect(() => {
-    const getTaxiId = async () => {
+    async function prepare() {
       try {
         const value = await AsyncStorage.getItem("@user");
         if (value !== null) {
           setTaxiId(value);
         }
+
+        await Font.loadAsync({
+          "OpenSans-regular": require("../assets/fonts/OpenSans/OpenSans-Regular.ttf"),
+          "OpenSans-bold": require("../assets/fonts/OpenSans/OpenSans-Bold.ttf"),
+          "OpenSans-medium": require("../assets/fonts/OpenSans/OpenSans-Medium.ttf"),
+          "OpenSans-semibold": require("../assets/fonts/OpenSans/OpenSans-SemiBold.ttf"),
+          "OpenSans-extrabold": require("../assets/fonts/OpenSans/OpenSans-ExtraBold.ttf"),
+        });
       } catch (e) {
-        // error reading value
+        console.warn(e);
       } finally {
         setAppIsReady(true);
       }
-    };
+    }
 
-    getTaxiId();
+    prepare();
   }, []);
 
   const onLayoutRootView = useCallback(async () => {
@@ -49,7 +59,7 @@ export default function AppBootstrap({ children }) {
 
 const styles = StyleSheet.create({
   container: {
+    backgroundColor: colors.primary,
     flex: 1,
-    backgroundColor: "whitesmoke",
   },
 });
