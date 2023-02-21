@@ -90,6 +90,7 @@ const CreateNewTaxiScreen: React.FC = () => {
       horizontal
       pagingEnabled
       scrollEnabled={false}
+      showsHorizontalScrollIndicator={false}
     >
       <View style={styles.pageContainer}>
         <View style={styles.headerContainer}>

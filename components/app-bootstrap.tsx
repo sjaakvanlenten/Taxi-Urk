@@ -24,6 +24,7 @@ export default function AppBootstrap({ children }) {
         }
 
         await Font.loadAsync({
+          "OpenSans-light": require("../assets/fonts/OpenSans/OpenSans-Light.ttf"),
           "OpenSans-regular": require("../assets/fonts/OpenSans/OpenSans-Regular.ttf"),
           "OpenSans-bold": require("../assets/fonts/OpenSans/OpenSans-Bold.ttf"),
           "OpenSans-medium": require("../assets/fonts/OpenSans/OpenSans-Medium.ttf"),

@@ -46,11 +46,7 @@ const WelcomeScreen = () => {
 
   const rLeftButtonStyle = useAnimatedStyle(() => {
     return {
-      transform: [
-        {
-          translateX: translate_X_Left.value,
-        },
-      ],
+      transform: [{ translateX: translate_X_Left.value }],
     };
   });
 
