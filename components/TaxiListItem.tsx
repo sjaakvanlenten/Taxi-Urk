@@ -1,85 +1,108 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import React from "react";
-import { Taxi } from "../typings";
+import { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
+import * as Haptics from "expo-haptics";
 
-const TaxiListItem = ({ taxi }: { taxi: Taxi }) => {
+import { off, onValue, ref } from "firebase/database";
+import { db } from "../firebase/firebaseConfig";
+import { LatLng } from "react-native-maps";
+
+type TaxiListItemProps = {
+  name: string;
+  id: string;
+  available: boolean;
+  isSharingLocation: boolean;
+  callback: (id: string, location: LatLng | null) => void;
+};
+
+const rippleConfig = {
+  borderless: true,
+  radius: 22,
+};
+
+const TaxiListItem: React.FC<TaxiListItemProps> = ({
+  name,
+  id,
+  available,
+  isSharingLocation,
+  callback,
+}) => {
+  const [trackLocation, setTrackLocation] = useState(false);
+
+  const onPressMarker = () => {
+    Haptics.selectionAsync();
+    const locationRef = ref(db, "locations/" + id);
+
+    const locationListener = () => {
+      onValue(locationRef, (snapshot) => {
+        if (snapshot.exists()) {
+          callback(snapshot.key, snapshot.val());
+        }
+      });
+    };
+
+    if (trackLocation) {
+      off(locationRef);
+      callback(id, null);
+    } else {
+      locationListener();
+    }
+
+    setTrackLocation((trackLocation) => !trackLocation);
+  };
+
   return (
-    <View
-      style={{
-        height: 80,
-        alignItems: "center",
-        paddingHorizontal: 20,
-        flexDirection: "row",
-        justifyContent: "space-between",
-        backgroundColor: "white",
-        marginBottom: 18,
-        borderRadius: 15,
-      }}
-    >
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+    <View style={styles.itemContainer}>
+      <View style={styles.headerContainer}>
         <Image
           source={{ uri: "https://i.pravatar.cc/300" }}
-          style={{
-            width: 50,
-            height: 50,
-            borderRadius: 100,
-            marginRight: 15,
-          }}
+          style={styles.profileImage}
         />
         <View>
+          <Text style={styles.headerNameText}>{name}</Text>
           <Text
-            style={{
-              color: "#232428",
-              fontFamily: "OpenSans-semibold",
-              fontSize: 16,
-            }}
+            style={[
+              {
+                color: available ? "#3EB489" : "#Ff2400",
+              },
+              styles.headerStatusText,
+            ]}
           >
-            {taxi.name}
-          </Text>
-          <Text
-            style={{
-              color: taxi.available ? "#3EB489" : "#Ff2400",
-              fontFamily: "OpenSans-regular",
-              fontSize: 12,
-            }}
-          >
-            {taxi.available ? "Beschikbaar" : "Afwezig"}
+            {available ? "Beschikbaar" : "Afwezig"}
           </Text>
         </View>
       </View>
-      <View style={{ flexDirection: "row", alignItems: "center" }}>
+      <View style={styles.iconsOuterContainer}>
         <Pressable
-          style={styles.iconContainer}
+          style={[
+            styles.iconInnerContainer,
+            trackLocation && styles.markerActive,
+          ]}
+          onPress={isSharingLocation ? onPressMarker : () => {}}
           android_ripple={{
             color: "#c83c26",
-            borderless: true,
-            radius: 22,
+            ...rippleConfig,
           }}
           // onPress={() => Linking.openURL(`tel:${taxi.phone}`)}
         >
-          <MaterialCommunityIcons name="map-marker" size={28} color="#de432a" />
+          <MaterialCommunityIcons
+            name="map-marker"
+            size={28}
+            color={isSharingLocation ? "#c83c26" : "grey"}
+          />
         </Pressable>
         <Pressable
-          style={[{ marginLeft: 20 }, styles.iconContainer]}
-          android_ripple={{
-            color: "#de932c",
-            borderless: true,
-            radius: 22,
-          }}
+          style={[{ marginLeft: 15 }, styles.iconInnerContainer]}
+          android_ripple={{ color: "#de932c", ...rippleConfig }}
           // onPress={() => Linking.openURL(`tel:${taxi.phone}`)}
         >
           <MaterialCommunityIcons name="car-info" size={30} color="#f7a331" />
         </Pressable>
         <Pressable
-          style={[{ marginLeft: 20 }, styles.iconContainer]}
-          android_ripple={{
-            color: "#38a27b",
-            borderless: true,
-            radius: 22,
-          }}
+          style={[{ marginLeft: 15 }, styles.iconInnerContainer]}
+          android_ripple={{ color: "#38a27b", ...rippleConfig }}
           // onPress={() => Linking.openURL(`tel:${taxi.phone}`)}
         >
           <FontAwesome5 name="phone" size={22} color="#3EB489" />
@@ -92,12 +115,48 @@ const TaxiListItem = ({ taxi }: { taxi: Taxi }) => {
 export default TaxiListItem;
 
 const styles = StyleSheet.create({
-  iconContainer: {
-    width: 30,
-    height: 30,
+  itemContainer: {
+    height: 80,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    marginBottom: 18,
+    borderRadius: 15,
+  },
+  headerContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  headerNameText: {
+    color: "#232428",
+    fontFamily: "OpenSans-semibold",
+    fontSize: 16,
+  },
+  headerStatusText: {
+    fontFamily: "OpenSans-regular",
+    fontSize: 12,
+  },
+  iconsOuterContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  iconInnerContainer: {
+    width: 40,
+    height: 40,
     borderRadius: 100,
     backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
+  },
+  profileImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 100,
+    marginRight: 15,
+  },
+  markerActive: {
+    backgroundColor: "rgba(200, 60, 38, 0.3)",
   },
 });

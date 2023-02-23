@@ -5,3 +5,6 @@ const taxisRef = ref(db, "taxis");
 
 export const queryByPhoneNumber = (phoneNumber: string) =>
   query(taxisRef, orderByChild("phone"), equalTo(phoneNumber));
+
+export const sortByAvailability = () =>
+  query(taxisRef, orderByChild("available"));

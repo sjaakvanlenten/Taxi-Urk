@@ -31,6 +31,22 @@ const TaxiHomeScreen = () => {
   useEffect(() => {
     const taxisRef = ref(db, "taxis");
 
+    // onChildChanged(query, (snapshot) => {
+    //   if (snapshot.exists) {
+    //     const taxiId = snapshot.key;
+
+    //     const newData = snapshot.val();
+    //     setTaxis((taxis) => {
+    //       const arr = [...taxis];
+
+    //       const index = arr.findIndex((taxi) => taxi.id === taxiId);
+    //       arr[index] = { id: taxiId, ...newData };
+
+    //       return arr;
+    //     });
+    //   }
+    // });
+
     onChildChanged(taxisRef, (snapshot) => {
       if (snapshot.exists) {
         const taxiId = snapshot.key;

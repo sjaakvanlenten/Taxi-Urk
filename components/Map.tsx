@@ -1,9 +1,9 @@
 import React from "react";
 import MapView, { Marker } from "react-native-maps";
-import { Taxi } from "../typings";
+import { locationData } from "../screens/Client/ClientHomeScreen";
 
 type MapProps = {
-  data: Taxi[];
+  data: locationData[];
 };
 
 const Map = ({ data }: MapProps) => {
@@ -17,9 +17,10 @@ const Map = ({ data }: MapProps) => {
         longitudeDelta: 0.045,
       }}
     >
-      {data.map((taxi, index) => (
-        <Marker key={index} coordinate={taxi.location} />
-      ))}
+      {data.length !== 0 &&
+        data.map((locationData) => (
+          <Marker key={locationData.id} coordinate={locationData.location} />
+        ))}
     </MapView>
   );
 };
