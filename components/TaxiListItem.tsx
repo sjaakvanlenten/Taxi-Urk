@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
@@ -33,10 +33,18 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
 }) => {
   const [trackLocation, setTrackLocation] = useState(false);
 
+  const locationRef = ref(db, "locations/" + id);
+
   const onPressMarker = () => {
     Haptics.selectionAsync();
-    const locationRef = ref(db, "locations/" + id);
+    if (trackLocation) {
+      off(locationRef);
+      callback(id, null);
+    }
+    setTrackLocation((trackLocation) => !trackLocation);
+  };
 
+  useEffect(() => {
     const locationListener = () => {
       onValue(locationRef, (snapshot) => {
         if (snapshot.exists()) {
@@ -46,14 +54,15 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
     };
 
     if (trackLocation) {
-      off(locationRef);
-      callback(id, null);
-    } else {
-      locationListener();
+      if (!isSharingLocation) {
+        off(locationRef);
+        callback(id, null);
+        setTrackLocation(false);
+      } else {
+        locationListener();
+      }
     }
-
-    setTrackLocation((trackLocation) => !trackLocation);
-  };
+  }, [trackLocation, isSharingLocation]);
 
   return (
     <View style={styles.itemContainer}>
@@ -80,7 +89,7 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
         <Pressable
           style={[
             styles.iconInnerContainer,
-            trackLocation && styles.markerActive,
+            isSharingLocation && trackLocation && styles.markerActive,
           ]}
           onPress={isSharingLocation ? onPressMarker : () => {}}
           android_ripple={{

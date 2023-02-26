@@ -64,7 +64,7 @@ const TaxiHomeScreen: React.FC = () => {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Map data={locations} />
 
-      <BottomSheet startY={350}>
+      <BottomSheet>
         <FlashList
           data={taxis}
           renderItem={({ item: taxi }) => (

@@ -1,6 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { StyleSheet } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { StyleSheet, View } from "react-native";
 import * as Font from "expo-font";
 
 import * as SplashScreen from "expo-splash-screen";
@@ -52,9 +51,9 @@ export default function AppBootstrap({ children }) {
   }
 
   return (
-    <SafeAreaView style={styles.container} onLayout={onLayoutRootView}>
+    <View style={styles.container} onLayout={onLayoutRootView}>
       {children}
-    </SafeAreaView>
+    </View>
   );
 }
 

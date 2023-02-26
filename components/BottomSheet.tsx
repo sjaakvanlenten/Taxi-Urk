@@ -11,7 +11,6 @@ import { colors } from "../themes/light";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 type BottomSheetProps = {
-  startY?: number;
   children: React.ReactNode;
 };
 
@@ -19,9 +18,11 @@ const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
 const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 2 + 100;
 
+const BOTTOMSHEET_OFFSET = 12;
+
 const DISTANCE_TO_SWIPE = 100;
 
-const BottomSheet: React.FC<BottomSheetProps> = ({ startY, children }) => {
+const BottomSheet: React.FC<BottomSheetProps> = ({ children }) => {
   const translateY = useSharedValue(0);
 
   const context = useSharedValue({ y: 0 });
@@ -36,7 +37,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ startY, children }) => {
       context.value = { y: translateY.value };
     })
     .onUpdate((event) => {
-      if (event.absoluteY < startY) {
+      if (event.absoluteY < SCREEN_HEIGHT / 2 - BOTTOMSHEET_OFFSET) {
         translateY.value = event.translationY + context.value.y;
         translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
       }
@@ -78,7 +79,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ startY, children }) => {
   return (
     <Animated.View
       style={[
-        { top: startY ? startY : SCREEN_HEIGHT - 100 },
+        { top: SCREEN_HEIGHT / 2 - BOTTOMSHEET_OFFSET },
         styles.bottomSheetContainer,
         rBottomSheetStyle,
       ]}
