@@ -8,7 +8,11 @@ import useLocation from "../../hooks/useLocation";
 import CustomButton from "../../components/CustomButton";
 import { RootStackScreenProps } from "../../navigation/types";
 import { deleteTaxiUser } from "../../async-storage/mutations";
-import { setAvailability, updateLocation } from "../../firebase/mutations";
+import {
+  setAvailability,
+  setIsSharingLocation,
+  updateLocation,
+} from "../../firebase/mutations";
 
 const TaxiHomeScreen: React.FC = () => {
   const [isAvailable, setIsAvailable] = useState(false);
@@ -24,6 +28,7 @@ const TaxiHomeScreen: React.FC = () => {
   const [errorMsg] = useLocation(isSyncingLocation, syncLocationWithDatabase);
 
   const toggleLocationSharing = () => {
+    setIsSharingLocation(taxiRef, !isSyncingLocation);
     setIsSyncingLocation((previousState) => !previousState);
   };
 

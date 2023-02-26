@@ -71,6 +71,7 @@ const TaxiHomeScreen: React.FC = () => {
             <TaxiListItem
               name={taxi.name}
               id={taxi.id}
+              phone={taxi.phone}
               available={taxi.available}
               isSharingLocation={taxi.isSharingLocation}
               callback={updateLocations}

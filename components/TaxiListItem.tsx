@@ -12,6 +12,7 @@ import { LatLng } from "react-native-maps";
 type TaxiListItemProps = {
   name: string;
   id: string;
+  phone: string;
   available: boolean;
   isSharingLocation: boolean;
   callback: (id: string, location: LatLng | null) => void;
@@ -25,6 +26,7 @@ const rippleConfig = {
 const TaxiListItem: React.FC<TaxiListItemProps> = ({
   name,
   id,
+  phone,
   available,
   isSharingLocation,
   callback,
@@ -85,7 +87,6 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
             color: "#c83c26",
             ...rippleConfig,
           }}
-          // onPress={() => Linking.openURL(`tel:${taxi.phone}`)}
         >
           <MaterialCommunityIcons
             name="map-marker"
@@ -96,14 +97,13 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
         <Pressable
           style={[{ marginLeft: 15 }, styles.iconInnerContainer]}
           android_ripple={{ color: "#de932c", ...rippleConfig }}
-          // onPress={() => Linking.openURL(`tel:${taxi.phone}`)}
         >
           <MaterialCommunityIcons name="car-info" size={30} color="#f7a331" />
         </Pressable>
         <Pressable
           style={[{ marginLeft: 15 }, styles.iconInnerContainer]}
           android_ripple={{ color: "#38a27b", ...rippleConfig }}
-          // onPress={() => Linking.openURL(`tel:${taxi.phone}`)}
+          onPress={() => Linking.openURL(`tel:${phone}`)}
         >
           <FontAwesome5 name="phone" size={22} color="#3EB489" />
         </Pressable>
