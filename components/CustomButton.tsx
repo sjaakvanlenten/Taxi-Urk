@@ -8,8 +8,8 @@ import React, { ReactNode } from "react";
 import { colors } from "../themes/light";
 
 interface ButtonProps {
-  children: ReactNode;
-  onPressHandler: (event: GestureResponderEvent) => void;
+  children?: ReactNode;
+  onPressHandler?: (event: GestureResponderEvent) => void;
   active?: boolean;
 }
 

@@ -1,17 +1,18 @@
 import React, { useCallback, useEffect, useState } from "react";
-
+import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { onValue } from "firebase/database";
 import { FlashList } from "@shopify/flash-list";
-import { Taxi } from "../../typings";
-
-import { GestureHandlerRootView } from "react-native-gesture-handler";
 
 import BottomSheet from "../../components/BottomSheet";
 import TaxiListItem from "../../components/TaxiListItem";
 import Map from "../../components/Map";
+import TopMenu from "../../components/TopMenu";
+import MenuButton from "../../components/buttons/MenuButton";
+
 import { sortByAvailability } from "../../firebase/queries";
 
 import { LatLng } from "react-native-maps";
+import { Taxi } from "../../typings";
 
 export type locationData = {
   id: string;
@@ -21,6 +22,7 @@ export type locationData = {
 const TaxiHomeScreen: React.FC = () => {
   const [taxis, setTaxis] = useState<Taxi[]>([]);
   const [locations, setLocations] = useState<locationData[]>([]);
+  const [bottomSheetExpanded, setBottomSheetExpanded] = useState(false);
 
   useEffect(() => {
     const query = sortByAvailability();
@@ -62,9 +64,10 @@ const TaxiHomeScreen: React.FC = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Map data={locations} />
+      <TopMenu />
+      <Map data={locations} enableInteraction={bottomSheetExpanded} />
 
-      <BottomSheet>
+      <BottomSheet stateHandler={setBottomSheetExpanded}>
         <FlashList
           data={taxis}
           renderItem={({ item: taxi }) => (

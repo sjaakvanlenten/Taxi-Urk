@@ -8,6 +8,7 @@ import * as Haptics from "expo-haptics";
 import { off, onValue, ref } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 import { LatLng } from "react-native-maps";
+import { colors } from "../themes/light";
 
 type TaxiListItemProps = {
   name: string;
@@ -35,34 +36,32 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
 
   const locationRef = ref(db, "locations/" + id);
 
+  const locationListener = () => {
+    onValue(locationRef, (snapshot) => {
+      if (snapshot.exists()) {
+        callback(snapshot.key, snapshot.val());
+      }
+    });
+  };
+
   const onPressMarker = () => {
     Haptics.selectionAsync();
     if (trackLocation) {
       off(locationRef);
       callback(id, null);
+    } else {
+      locationListener();
     }
     setTrackLocation((trackLocation) => !trackLocation);
   };
 
   useEffect(() => {
-    const locationListener = () => {
-      onValue(locationRef, (snapshot) => {
-        if (snapshot.exists()) {
-          callback(snapshot.key, snapshot.val());
-        }
-      });
-    };
-
-    if (trackLocation) {
-      if (!isSharingLocation) {
-        off(locationRef);
-        callback(id, null);
-        setTrackLocation(false);
-      } else {
-        locationListener();
-      }
+    if (!isSharingLocation && trackLocation) {
+      off(locationRef);
+      callback(id, null);
+      setTrackLocation(false);
     }
-  }, [trackLocation, isSharingLocation]);
+  }, [isSharingLocation]);
 
   return (
     <View style={styles.itemContainer}>
@@ -132,14 +131,14 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     backgroundColor: "white",
     marginBottom: 18,
-    borderRadius: 15,
+    borderRadius: 10,
   },
   headerContainer: {
     flexDirection: "row",
     alignItems: "center",
   },
   headerNameText: {
-    color: "#232428",
+    color: colors.black,
     fontFamily: "OpenSans-semibold",
     fontSize: 16,
   },
@@ -155,7 +154,6 @@ const styles = StyleSheet.create({
     width: 40,
     height: 40,
     borderRadius: 100,
-    backgroundColor: "white",
     justifyContent: "center",
     alignItems: "center",
   },
@@ -166,6 +164,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   markerActive: {
-    backgroundColor: "rgba(200, 60, 38, 0.3)",
+    backgroundColor: "rgba(200, 60, 38, 0.4)",
   },
 });

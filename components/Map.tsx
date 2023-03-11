@@ -4,12 +4,16 @@ import { locationData } from "../screens/Client/ClientHomeScreen";
 
 type MapProps = {
   data: locationData[];
+  enableInteraction: boolean;
 };
 
-const Map = ({ data }: MapProps) => {
+const Map = ({ data, enableInteraction }: MapProps) => {
   return (
     <MapView
-      style={{ flex: 0.5, padding: 20 }}
+      style={{ flex: 1, padding: 20 }}
+      scrollEnabled={!enableInteraction}
+      zoomEnabled={!enableInteraction}
+      rotateEnabled={false}
       initialRegion={{
         latitude: 52.661909,
         longitude: 5.614741,

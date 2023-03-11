@@ -1,8 +1,9 @@
 import { Dimensions, StyleSheet, View } from "react-native";
-import React, { useCallback } from "react";
+import React, { Dispatch, SetStateAction, useCallback } from "react";
 import Animated, {
   Extrapolate,
   interpolate,
+  runOnJS,
   useAnimatedStyle,
   useSharedValue,
   withSpring,
@@ -12,24 +13,33 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 
 type BottomSheetProps = {
   children: React.ReactNode;
+  stateHandler: Dispatch<SetStateAction<boolean>>;
 };
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 2 + 100;
+const BOTTOMSHEET_OFFSET = 0;
 
-const BOTTOMSHEET_OFFSET = 12;
+const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 2 + 100 + BOTTOMSHEET_OFFSET;
 
 const DISTANCE_TO_SWIPE = 100;
 
-const BottomSheet: React.FC<BottomSheetProps> = ({ children }) => {
+const BottomSheet: React.FC<BottomSheetProps> = ({
+  children,
+  stateHandler,
+}) => {
   const translateY = useSharedValue(0);
 
   const context = useSharedValue({ y: 0 });
 
   const scrollTo = useCallback((destination: number) => {
     "worklet";
-    translateY.value = withSpring(destination, { damping: 50 });
+    destination < 0
+      ? runOnJS(stateHandler)(true)
+      : runOnJS(stateHandler)(false);
+    translateY.value = withSpring(destination, {
+      damping: 50,
+    });
   }, []);
 
   const gesture = Gesture.Pan()
@@ -70,7 +80,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ children }) => {
       [SCREEN_HEIGHT / 2, SCREEN_HEIGHT - 100]
     );
     return {
-      borderRadius,
+      borderTopRightRadius: borderRadius,
+      borderTopLeftRadius: borderRadius,
       height,
       transform: [{ translateY: translateY.value }],
     };
@@ -85,7 +96,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({ children }) => {
       ]}
     >
       <GestureDetector gesture={gesture}>
-        <Animated.View style={{ height: 35, justifyContent: "center" }}>
+        <Animated.View style={{ height: 25, justifyContent: "center" }}>
           <View style={styles.line} />
         </Animated.View>
       </GestureDetector>
@@ -102,11 +113,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     paddingHorizontal: 15,
     position: "absolute",
-    borderRadius: 25,
+    elevation: 10,
   },
   line: {
-    width: 60,
-    height: 5,
+    width: 65,
+    height: 6,
     backgroundColor: "white",
     alignSelf: "center",
     borderRadius: 5,
