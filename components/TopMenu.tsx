@@ -6,8 +6,12 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 import MenuButton from "./buttons/MenuButton";
-import { colors } from "../themes/light";
+import { light, dark } from "../themes/theme";
 import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import useTheme from "../context/theme-context";
 
 type TopMenuProps = {
   children?: React.ReactNode;
@@ -25,11 +29,15 @@ const MARGIN = (MENU_WIDTH - 50) / 4;
 
 const rippleConfig = {
   borderless: true,
+  color: "#de932c",
   radius: 25,
 };
 
 const TopMenu: React.FC<TopMenuProps> = (children) => {
   const [menuExpanded, setMenuExpanded] = useState(false);
+
+  const { theme, toggleTheme } = useTheme();
+
   const translateX = useSharedValue(0);
 
   useEffect(() => {
@@ -63,44 +71,69 @@ const TopMenu: React.FC<TopMenuProps> = (children) => {
 
       <AnimatedPressable
         style={[
-          styles.button,
+          styles.menuButton,
           animatedButtonStyle1,
-          { elevation: menuExpanded ? 10 : 0 },
+          {
+            elevation: menuExpanded ? 10 : 0,
+            backgroundColor: theme.background,
+          },
         ]}
         android_ripple={{ ...rippleConfig }}
       >
-        <Ionicons name="md-settings-sharp" size={32} color="white" />
+        <Ionicons
+          name="md-settings-sharp"
+          size={28}
+          color={theme.iconBackGround}
+        />
       </AnimatedPressable>
 
       <AnimatedPressable
         style={[
-          styles.button,
+          styles.menuButton,
           animatedButtonStyle2,
-          { elevation: menuExpanded ? 10 : 0 },
+          {
+            elevation: menuExpanded ? 10 : 0,
+            backgroundColor: theme.background,
+          },
         ]}
         android_ripple={{ ...rippleConfig }}
       >
-        <Ionicons name="md-settings-sharp" size={32} color="white" />
+        <FontAwesome5 name="taxi" size={28} color={theme.iconBackGround} />
       </AnimatedPressable>
       <AnimatedPressable
         style={[
-          styles.button,
+          styles.menuButton,
           animatedButtonStyle3,
-          { elevation: menuExpanded ? 10 : 0 },
+          {
+            elevation: menuExpanded ? 10 : 0,
+            backgroundColor: theme.background,
+          },
         ]}
         android_ripple={{ ...rippleConfig }}
       >
-        <Ionicons name="md-settings-sharp" size={32} color="white" />
+        <MaterialCommunityIcons
+          name="map-marker"
+          size={28}
+          color={theme.iconBackGround}
+        />
       </AnimatedPressable>
       <AnimatedPressable
         style={[
-          styles.button,
+          styles.menuButton,
           animatedButtonStyle4,
-          { elevation: menuExpanded ? 10 : 0 },
+          {
+            elevation: menuExpanded ? 10 : 0,
+            backgroundColor: theme.background,
+          },
         ]}
         android_ripple={{ ...rippleConfig }}
+        onPress={toggleTheme}
       >
-        <Ionicons name="md-settings-sharp" size={32} color="white" />
+        {theme.name === "light" ? (
+          <Feather name="sun" size={28} color={light.iconBackGround} />
+        ) : (
+          <Feather name="moon" size={28} color={dark.iconBackGround} />
+        )}
       </AnimatedPressable>
     </View>
   );
@@ -118,11 +151,10 @@ const styles = StyleSheet.create({
     zIndex: 1,
     borderRadius: 25,
   },
-  button: {
+  menuButton: {
     position: "absolute",
     width: 50,
     height: 50,
-    backgroundColor: colors.primary,
     borderRadius: 25,
     justifyContent: "center",
     alignItems: "center",

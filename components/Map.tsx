@@ -1,5 +1,6 @@
 import React from "react";
 import MapView, { Marker } from "react-native-maps";
+import useTheme from "../context/theme-context";
 import { locationData } from "../screens/Client/ClientHomeScreen";
 
 type MapProps = {
@@ -8,9 +9,11 @@ type MapProps = {
 };
 
 const Map = ({ data, enableInteraction }: MapProps) => {
+  const { theme } = useTheme();
   return (
     <MapView
       style={{ flex: 1, padding: 20 }}
+      customMapStyle={theme.mapStyle}
       scrollEnabled={!enableInteraction}
       zoomEnabled={!enableInteraction}
       rotateEnabled={false}

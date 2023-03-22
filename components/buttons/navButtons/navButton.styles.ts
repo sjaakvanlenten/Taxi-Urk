@@ -1,5 +1,5 @@
 import { StyleSheet } from "react-native";
-import { colors } from "../../../themes/light";
+import { light } from "../../../themes/theme";
 
 const styles = StyleSheet.create({
   pressableBox: {
@@ -12,7 +12,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     fontFamily: "OpenSans-semibold",
-    color: colors.black,
+    color: light.black,
     fontSize: 18,
   },
 });

@@ -1,6 +1,6 @@
-import { StyleSheet, Text, View, Pressable } from "react-native";
+import { Pressable } from "react-native";
 import { useRef, Dispatch, SetStateAction } from "react";
-import { colors } from "../../themes/light";
+import { light, dark } from "../../themes/theme";
 import LottieView from "lottie-react-native";
 
 type MenuButtonProps = {
@@ -17,14 +17,16 @@ const MenuButton = ({ isPressed, setIsPressed }: MenuButtonProps) => {
       : animationRef.current?.play(0, 30);
     setIsPressed((state) => !state);
   };
-
+  console.log(isPressed);
   return (
     <Pressable
       style={{
         width: 50,
         height: 50,
         borderRadius: 100,
-        backgroundColor: isPressed ? colors.black : colors.primary,
+        backgroundColor: isPressed
+          ? dark.listItemBackground
+          : dark.iconBackGround,
 
         zIndex: 2,
         justifyContent: "center",
@@ -45,7 +47,7 @@ const MenuButton = ({ isPressed, setIsPressed }: MenuButtonProps) => {
         colorFilters={[
           {
             keypath: "Path",
-            color: isPressed ? "#FFFFFF" : colors.black,
+            color: isPressed ? dark.textColor : light.black,
           },
         ]}
       />
@@ -54,5 +56,3 @@ const MenuButton = ({ isPressed, setIsPressed }: MenuButtonProps) => {
 };
 
 export default MenuButton;
-
-const styles = StyleSheet.create({});

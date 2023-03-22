@@ -5,7 +5,7 @@ import {
   Text,
 } from "react-native";
 import React, { ReactNode } from "react";
-import { colors } from "../themes/light";
+import { light } from "../themes/theme";
 
 interface ButtonProps {
   children?: ReactNode;
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   activeButton: {
-    backgroundColor: colors.black,
+    backgroundColor: light.black,
   },
   disabledButton: {
     backgroundColor: "white",

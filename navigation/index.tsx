@@ -8,7 +8,7 @@ import CreateNewTaxiScreen from "../screens/Taxi/CreateNewTaxiScreen";
 import useTaxiDriverContext from "../context/taxiDriver-context";
 import { RootStackParamList } from "./types";
 import TestingScreen from "../screens/Test/TestingScreen";
-import { colors } from "../themes/light";
+import { light } from "../themes/theme";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
@@ -20,7 +20,7 @@ const Navigator = () => {
       <Stack.Navigator
         initialRouteName={taxiId ? "TaxiHome" : "Welcome"}
         screenOptions={{
-          contentStyle: { backgroundColor: colors.primary },
+          contentStyle: { backgroundColor: light.primary },
         }}
       >
         <Stack.Group>

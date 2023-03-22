@@ -2,7 +2,7 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { Controller, Control } from "react-hook-form";
 import React from "react";
 import { FormData } from "../screens/Taxi/CreateNewTaxiScreen";
-import { colors } from "../themes/light";
+import { light } from "../themes/theme";
 
 interface InputProps {
   control: Control<FormData, any>;
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
   container: {
     backgroundColor: "white",
     alignSelf: "stretch",
-    borderColor: colors.greyBorder,
+    borderColor: light.greyBorder,
     borderWidth: 2,
     borderRadius: 20,
 

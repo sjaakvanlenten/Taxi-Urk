@@ -8,7 +8,7 @@ import * as Haptics from "expo-haptics";
 import { off, onValue, ref } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 import { LatLng } from "react-native-maps";
-import { colors } from "../themes/light";
+import useTheme from "../context/theme-context";
 
 type TaxiListItemProps = {
   name: string;
@@ -32,6 +32,8 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
   isSharingLocation,
   callback,
 }) => {
+  const { theme } = useTheme();
+
   const [trackLocation, setTrackLocation] = useState(false);
 
   const locationRef = ref(db, "locations/" + id);
@@ -64,14 +66,30 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
   }, [isSharingLocation]);
 
   return (
-    <View style={styles.itemContainer}>
+    <View
+      style={[
+        styles.itemContainer,
+        {
+          backgroundColor: theme.listItemBackground,
+        },
+      ]}
+    >
       <View style={styles.headerContainer}>
         <Image
           source={{ uri: "https://i.pravatar.cc/300" }}
           style={styles.profileImage}
         />
         <View>
-          <Text style={styles.headerNameText}>{name}</Text>
+          <Text
+            style={[
+              styles.headerNameText,
+              {
+                color: theme.textColor,
+              },
+            ]}
+          >
+            {name}
+          </Text>
           <Text
             style={[
               {
@@ -129,7 +147,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flexDirection: "row",
     justifyContent: "space-between",
-    backgroundColor: "white",
     marginBottom: 18,
     borderRadius: 10,
   },
@@ -138,7 +155,6 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   headerNameText: {
-    color: colors.black,
     fontFamily: "OpenSans-semibold",
     fontSize: 16,
   },

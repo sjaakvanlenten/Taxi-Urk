@@ -8,8 +8,8 @@ import Animated, {
   useSharedValue,
   withSpring,
 } from "react-native-reanimated";
-import { colors } from "../themes/light";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
+import useTheme from "../context/theme-context";
 
 type BottomSheetProps = {
   children: React.ReactNode;
@@ -28,6 +28,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   children,
   stateHandler,
 }) => {
+  const { theme } = useTheme();
+
   const translateY = useSharedValue(0);
 
   const context = useSharedValue({ y: 0 });
@@ -90,14 +92,24 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   return (
     <Animated.View
       style={[
-        { top: SCREEN_HEIGHT / 2 - BOTTOMSHEET_OFFSET },
+        {
+          top: SCREEN_HEIGHT / 2 - BOTTOMSHEET_OFFSET,
+          backgroundColor: theme.background,
+        },
         styles.bottomSheetContainer,
         rBottomSheetStyle,
       ]}
     >
       <GestureDetector gesture={gesture}>
         <Animated.View style={{ height: 25, justifyContent: "center" }}>
-          <View style={styles.line} />
+          <View
+            style={[
+              styles.line,
+              {
+                backgroundColor: theme.bottomSheetLine,
+              },
+            ]}
+          />
         </Animated.View>
       </GestureDetector>
       {children}
@@ -110,7 +122,6 @@ export default BottomSheet;
 const styles = StyleSheet.create({
   bottomSheetContainer: {
     width: SCREEN_WIDTH,
-    backgroundColor: colors.primary,
     paddingHorizontal: 15,
     position: "absolute",
     elevation: 10,

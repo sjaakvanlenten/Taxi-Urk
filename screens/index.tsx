@@ -11,7 +11,7 @@ import Animated, {
   withTiming,
 } from "react-native-reanimated";
 
-import { colors } from "../themes/light";
+import { light } from "../themes/theme";
 import LeftNavButton from "../components/buttons/navButtons/LeftNavButton";
 import RightNavButton from "../components/buttons/navButtons/RightNavButton";
 
@@ -83,7 +83,7 @@ const WelcomeScreen = () => {
         </AnimatedPressable>
       </View>
 
-      <StatusBar backgroundColor={colors.black} style="light" />
+      <StatusBar backgroundColor={light.black} style="light" />
     </View>
   );
 };

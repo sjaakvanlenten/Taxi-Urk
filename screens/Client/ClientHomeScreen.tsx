@@ -7,7 +7,6 @@ import BottomSheet from "../../components/BottomSheet";
 import TaxiListItem from "../../components/TaxiListItem";
 import Map from "../../components/Map";
 import TopMenu from "../../components/TopMenu";
-import MenuButton from "../../components/buttons/MenuButton";
 
 import { sortByAvailability } from "../../firebase/queries";
 

@@ -21,7 +21,7 @@ import CustomInput from "../../components/CustomInput";
 import { storeTaxiUserLocally } from "../../async-storage/mutations";
 import { pushNewTaxiRef } from "../../firebase/mutations";
 import { resetNavigationState } from "../../navigation/actions";
-import { colors } from "../../themes/light";
+import { light } from "../../themes/theme";
 
 export interface FormData extends FieldValues {
   name: string;
@@ -111,7 +111,7 @@ const CreateNewTaxiScreen: React.FC = () => {
           style={styles.pressableBackButton}
           onPress={onGoBackButtonPressHandler}
         >
-          <Feather name="arrow-left" size={26} color={colors.black} />
+          <Feather name="arrow-left" size={26} color={light.black} />
         </Pressable>
 
         <View style={styles.pageContainer}>

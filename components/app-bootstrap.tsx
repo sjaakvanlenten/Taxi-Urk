@@ -6,7 +6,7 @@ import * as SplashScreen from "expo-splash-screen";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useTaxiDriverContext from "../context/taxiDriver-context";
-import { colors } from "../themes/light";
+import { light } from "../themes/theme";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -59,7 +59,7 @@ export default function AppBootstrap({ children }) {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: colors.primary,
+    backgroundColor: light.primary,
     flex: 1,
   },
 });
