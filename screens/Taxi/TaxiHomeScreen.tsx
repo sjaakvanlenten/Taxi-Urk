@@ -1,7 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState } from "react";
 import { StyleSheet, Text, View, Switch } from "react-native";
 
-import { LocationObject } from "expo-location";
 import { useRoute } from "@react-navigation/native";
 
 import useLocation from "../../hooks/useLocation";
@@ -11,7 +10,6 @@ import { deleteTaxiUser } from "../../async-storage/mutations";
 import {
   setAvailability,
   setIsSharingLocation,
-  updateLocation,
 } from "../../firebase/mutations";
 
 const TaxiHomeScreen: React.FC = () => {
@@ -21,11 +19,7 @@ const TaxiHomeScreen: React.FC = () => {
     params: { taxiRef },
   } = useRoute<RootStackScreenProps<"TaxiHome">["route"]>();
 
-  const syncLocationWithDatabase = useCallback((location: LocationObject) => {
-    updateLocation(taxiRef, location.coords);
-  }, []);
-
-  const [errorMsg] = useLocation(isSyncingLocation, syncLocationWithDatabase);
+  const [errorMsg] = useLocation(isSyncingLocation);
 
   const toggleLocationSharing = () => {
     setIsSharingLocation(taxiRef, !isSyncingLocation);

@@ -1,3 +1,4 @@
+import "expo-dev-client";
 import { ReactElement } from "react";
 import AppBootstrap from "./components/app-bootstrap";
 import { TaxiDriverProvider } from "./context/taxiDriver-context";

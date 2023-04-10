@@ -17,9 +17,9 @@ export default function AppBootstrap({ children }) {
   useEffect(() => {
     async function prepare() {
       try {
-        const value = await AsyncStorage.getItem("@user");
-        if (value !== null) {
-          setTaxiId(value);
+        const taxiId = await AsyncStorage.getItem("@user");
+        if (taxiId !== null) {
+          setTaxiId(taxiId);
         }
 
         await Font.loadAsync({
