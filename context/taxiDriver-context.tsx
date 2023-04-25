@@ -5,10 +5,11 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
+import { Taxi } from "../typings";
 
 type TaxiDriverContextType = {
-  taxiId: string;
-  setTaxiId: Dispatch<SetStateAction<string | null>>;
+  taxi: Taxi;
+  setTaxi: Dispatch<SetStateAction<Taxi | null>>;
 };
 
 const taxiDriverContext = createContext<TaxiDriverContextType | undefined>(
@@ -16,10 +17,10 @@ const taxiDriverContext = createContext<TaxiDriverContextType | undefined>(
 );
 
 export const TaxiDriverProvider = ({ children }) => {
-  const [taxiId, setTaxiId] = useState<string | null>(null);
+  const [taxi, setTaxi] = useState<Taxi | null>(null);
 
   return (
-    <taxiDriverContext.Provider value={{ taxiId, setTaxiId }}>
+    <taxiDriverContext.Provider value={{ taxi, setTaxi }}>
       {children}
     </taxiDriverContext.Provider>
   );

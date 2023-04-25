@@ -13,12 +13,12 @@ import { light } from "../themes/theme";
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 const Navigator = () => {
-  const { taxiId } = useTaxiDriverContext();
+  const { taxi } = useTaxiDriverContext();
 
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={taxiId ? "TaxiHome" : "Welcome"}
+        initialRouteName={taxi?.id ? "TaxiHome" : "Welcome"}
         screenOptions={{
           contentStyle: { backgroundColor: light.primary },
         }}
@@ -40,7 +40,6 @@ const Navigator = () => {
             name="TaxiHome"
             component={TaxiHomeScreen}
             options={{ headerShown: false }}
-            initialParams={taxiId && { taxiRef: taxiId }}
           />
         </Stack.Group>
         <Stack.Group>

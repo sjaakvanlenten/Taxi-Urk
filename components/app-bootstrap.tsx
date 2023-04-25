@@ -7,19 +7,34 @@ import * as SplashScreen from "expo-splash-screen";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import useTaxiDriverContext from "../context/taxiDriver-context";
 import { light } from "../themes/theme";
+import { child, get } from "firebase/database";
+import { taxisRef } from "../firebase/queries";
+import { Taxi } from "../typings";
 
 SplashScreen.preventAutoHideAsync();
 
 export default function AppBootstrap({ children }) {
   const [appIsReady, setAppIsReady] = useState(false);
-  const { setTaxiId } = useTaxiDriverContext();
+  const { setTaxi } = useTaxiDriverContext();
 
   useEffect(() => {
     async function prepare() {
       try {
         const taxiId = await AsyncStorage.getItem("@user");
         if (taxiId !== null) {
-          setTaxiId(taxiId);
+          await get(child(taxisRef, `/${taxiId}`))
+            .then((snapshot) => {
+              if (snapshot.exists()) {
+                const taxi: Taxi = snapshot.val();
+                taxi.id = snapshot.key;
+                setTaxi(taxi);
+              } else {
+                console.log("Gegevens zijn niet bekend");
+              }
+            })
+            .catch((error) => {
+              console.error(error);
+            });
         }
 
         await Font.loadAsync({

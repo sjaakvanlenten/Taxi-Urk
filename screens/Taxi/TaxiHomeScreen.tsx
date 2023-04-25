@@ -1,33 +1,32 @@
 import { useState } from "react";
 import { StyleSheet, Text, View, Switch } from "react-native";
 
-import { useRoute } from "@react-navigation/native";
-
 import useLocation from "../../hooks/useLocation";
 import CustomButton from "../../components/CustomButton";
-import { RootStackScreenProps } from "../../navigation/types";
 import { deleteTaxiUser } from "../../async-storage/mutations";
 import {
   setAvailability,
   setIsSharingLocation,
 } from "../../firebase/mutations";
+import useTaxiDriverContext from "../../context/taxiDriver-context";
 
 const TaxiHomeScreen: React.FC = () => {
-  const [isAvailable, setIsAvailable] = useState(false);
-  const [isSyncingLocation, setIsSyncingLocation] = useState(false);
-  const {
-    params: { taxiRef },
-  } = useRoute<RootStackScreenProps<"TaxiHome">["route"]>();
+  const { taxi } = useTaxiDriverContext();
+
+  const [isAvailable, setIsAvailable] = useState(taxi.available);
+  const [isSyncingLocation, setIsSyncingLocation] = useState(
+    taxi.isSharingLocation
+  );
 
   const [errorMsg] = useLocation(isSyncingLocation);
 
   const toggleLocationSharing = () => {
-    setIsSharingLocation(taxiRef, !isSyncingLocation);
+    setIsSharingLocation(taxi.id, !isSyncingLocation);
     setIsSyncingLocation((previousState) => !previousState);
   };
 
   const toggleAvailability = () => {
-    setAvailability(taxiRef, !isAvailable);
+    setAvailability(taxi.id, !isAvailable);
     setIsAvailable((previousState) => {
       previousState && setIsSyncingLocation(false);
       return !previousState;
