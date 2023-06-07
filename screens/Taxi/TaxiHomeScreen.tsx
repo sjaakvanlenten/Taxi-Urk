@@ -13,7 +13,7 @@ import useTaxiDriverContext from "../../context/taxiDriver-context";
 const TaxiHomeScreen: React.FC = () => {
   const { taxi } = useTaxiDriverContext();
 
-  const [isAvailable, setIsAvailable] = useState(taxi.available);
+  const [isAvailable, setIsAvailable] = useState(taxi.available || false);
   const [isSyncingLocation, setIsSyncingLocation] = useState(
     taxi.isSharingLocation
   );

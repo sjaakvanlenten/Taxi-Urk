@@ -31,7 +31,6 @@ TaskManager.defineTask(
     }
     if (locations) {
       const taxiId = await AsyncStorage.getItem("@user");
-      console.log(taxiId, locations);
       updateLocation(taxiId, locations[0]?.coords);
     }
   }
@@ -73,7 +72,6 @@ export default (shouldTrack: boolean) => {
     } else {
       TaskManager.isTaskRegisteredAsync(LOCATION_TRACKING).then((tracking) => {
         if (tracking) {
-          console.log(tracking);
           stopLocationUpdatesAsync(LOCATION_TRACKING);
         }
       });

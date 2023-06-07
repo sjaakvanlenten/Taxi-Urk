@@ -17,7 +17,7 @@ const MenuButton = ({ isPressed, setIsPressed }: MenuButtonProps) => {
       : animationRef.current?.play(0, 30);
     setIsPressed((state) => !state);
   };
-  console.log(isPressed);
+
   return (
     <Pressable
       style={{

@@ -5,10 +5,11 @@ import { FontAwesome5 } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
 import * as Haptics from "expo-haptics";
 
-import { off, onValue, ref } from "firebase/database";
+import { DataSnapshot, ref } from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 import { LatLng } from "react-native-maps";
 import useTheme from "../context/theme-context";
+import useFirebaseListener from "../hooks/useFirebaseListener";
 
 type TaxiListItemProps = {
   name: string;
@@ -16,7 +17,8 @@ type TaxiListItemProps = {
   phone: string;
   available: boolean;
   isSharingLocation: boolean;
-  callback: (id: string, location: LatLng | null) => void;
+  listenerCallback: (data: DataSnapshot) => void;
+  updateLocation: (id: string, data: LatLng | null) => void;
 };
 
 const rippleConfig = {
@@ -30,7 +32,8 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
   phone,
   available,
   isSharingLocation,
-  callback,
+  listenerCallback,
+  updateLocation,
 }) => {
   const { theme } = useTheme();
 
@@ -38,29 +41,26 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
 
   const locationRef = ref(db, "locations/" + id);
 
-  const locationListener = () => {
-    onValue(locationRef, (snapshot) => {
-      if (snapshot.exists()) {
-        callback(snapshot.key, snapshot.val());
-      }
-    });
-  };
+  const { setIsListenerActive } = useFirebaseListener({
+    callback: listenerCallback,
+    query: locationRef,
+  });
 
   const onPressMarker = () => {
     Haptics.selectionAsync();
     if (trackLocation) {
-      off(locationRef);
-      callback(id, null);
+      setIsListenerActive(false);
+      updateLocation(id, null);
     } else {
-      locationListener();
+      setIsListenerActive(true);
     }
     setTrackLocation((trackLocation) => !trackLocation);
   };
 
   useEffect(() => {
     if (!isSharingLocation && trackLocation) {
-      off(locationRef);
-      callback(id, null);
+      setIsListenerActive(false);
+      updateLocation(id, null);
       setTrackLocation(false);
     }
   }, [isSharingLocation]);
