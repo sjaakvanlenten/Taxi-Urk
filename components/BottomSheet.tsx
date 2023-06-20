@@ -49,22 +49,35 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       context.value = { y: translateY.value };
     })
     .onUpdate((event) => {
-      if (event.absoluteY < SCREEN_HEIGHT / 2 - BOTTOMSHEET_OFFSET) {
-        translateY.value = event.translationY + context.value.y;
-        translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
-      }
+      translateY.value = event.translationY + context.value.y;
+      translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
     })
     .onEnd(() => {
-      if (context.value.y <= MAX_TRANSLATE_Y + DISTANCE_TO_SWIPE) {
-        if (translateY.value > MAX_TRANSLATE_Y + DISTANCE_TO_SWIPE) {
-          scrollTo(0);
+      const shouldScrollToMax = translateY.value < 0;
+      const shouldScrollToMin = translateY.value > 0;
+
+      if (shouldScrollToMax) {
+        if (context.value.y <= MAX_TRANSLATE_Y + DISTANCE_TO_SWIPE) {
+          scrollTo(
+            translateY.value > MAX_TRANSLATE_Y + DISTANCE_TO_SWIPE
+              ? 0
+              : MAX_TRANSLATE_Y
+          );
         } else {
-          scrollTo(MAX_TRANSLATE_Y);
+          scrollTo(translateY.value > -DISTANCE_TO_SWIPE ? 0 : MAX_TRANSLATE_Y);
         }
-      } else if (translateY.value > -DISTANCE_TO_SWIPE) {
-        scrollTo(0);
-      } else {
-        scrollTo(MAX_TRANSLATE_Y);
+      }
+
+      if (shouldScrollToMin) {
+        if (context.value.y >= -MAX_TRANSLATE_Y - DISTANCE_TO_SWIPE) {
+          scrollTo(
+            translateY.value < -MAX_TRANSLATE_Y - DISTANCE_TO_SWIPE
+              ? 0
+              : -MAX_TRANSLATE_Y
+          );
+        } else {
+          scrollTo(translateY.value < DISTANCE_TO_SWIPE ? 0 : -MAX_TRANSLATE_Y);
+        }
       }
     });
 

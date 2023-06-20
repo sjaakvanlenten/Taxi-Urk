@@ -3,9 +3,9 @@ import { mapStyle } from "../mapStyle";
 export const light = {
   name: "light",
   primary: "#f7b731",
-  background: "#f7a331",
-  listItemBackground: "#ffffff",
-  iconBackGround: "#ffffff",
+  background: "#f9b55a",
+  listItemBackground: "#f2f2f2",
+  iconBackGround: "#f2f2f2",
   bottomSheetLine: "#ffffff",
   textColor: "#1B1B1D",
   black: "#1B1B1D",

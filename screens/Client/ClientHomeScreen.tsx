@@ -73,7 +73,11 @@ const TaxiHomeScreen: React.FC = () => {
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <TopMenu />
-      <Map data={locations} enableInteraction={bottomSheetExpanded} />
+      <Map
+        data={locations}
+        enableInteraction={bottomSheetExpanded}
+        taxis={taxis}
+      />
 
       <BottomSheet stateHandler={setBottomSheetExpanded}>
         <FlashList

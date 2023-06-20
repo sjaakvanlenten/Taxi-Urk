@@ -108,11 +108,15 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
             styles.iconInnerContainer,
             isSharingLocation && trackLocation && styles.markerActive,
           ]}
-          onPress={isSharingLocation ? onPressMarker : () => {}}
-          android_ripple={{
-            color: "#c83c26",
-            ...rippleConfig,
-          }}
+          onPress={isSharingLocation ? onPressMarker : null}
+          android_ripple={
+            isSharingLocation
+              ? {
+                  color: "#c83c26",
+                  ...rippleConfig,
+                }
+              : {}
+          }
         >
           <MaterialCommunityIcons
             name="map-marker"
