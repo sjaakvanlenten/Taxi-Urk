@@ -1,5 +1,5 @@
 import { Dimensions, StyleSheet, View } from "react-native";
-import React, { Dispatch, SetStateAction, useCallback } from "react";
+import { useCallback, ReactNode } from "react";
 import Animated, {
   Extrapolate,
   interpolate,
@@ -12,8 +12,8 @@ import { Gesture, GestureDetector } from "react-native-gesture-handler";
 import useTheme from "../context/theme-context";
 
 type BottomSheetProps = {
-  children: React.ReactNode;
-  stateHandler: Dispatch<SetStateAction<boolean>>;
+  children: ReactNode;
+  onStateChange: (isExpanded: boolean) => void;
 };
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
@@ -26,7 +26,7 @@ const DISTANCE_TO_SWIPE = 100;
 
 const BottomSheet: React.FC<BottomSheetProps> = ({
   children,
-  stateHandler,
+  onStateChange,
 }) => {
   const { theme } = useTheme();
 
@@ -37,8 +37,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
   const scrollTo = useCallback((destination: number) => {
     "worklet";
     destination < 0
-      ? runOnJS(stateHandler)(true)
-      : runOnJS(stateHandler)(false);
+      ? runOnJS(onStateChange)(true) // expanded
+      : runOnJS(onStateChange)(false);
     translateY.value = withSpring(destination, {
       damping: 50,
     });

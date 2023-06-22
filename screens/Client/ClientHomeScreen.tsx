@@ -79,7 +79,7 @@ const TaxiHomeScreen: React.FC = () => {
         taxis={taxis}
       />
 
-      <BottomSheet stateHandler={setBottomSheetExpanded}>
+      <BottomSheet onStateChange={setBottomSheetExpanded}>
         <FlashList
           data={taxis}
           renderItem={({ item: taxi }) => (

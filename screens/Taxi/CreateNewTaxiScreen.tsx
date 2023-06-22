@@ -163,7 +163,7 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     position: "absolute",
-    top: 10,
+    top: 25,
     left: 10,
   },
   headerContainer: {

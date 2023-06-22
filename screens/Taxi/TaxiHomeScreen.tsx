@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { StyleSheet, Text, View, Switch } from "react-native";
+import { StyleSheet, Text, View, Switch, Image } from "react-native";
 
 import useLocation from "../../hooks/useLocation";
 import CustomButton from "../../components/CustomButton";
@@ -9,10 +9,13 @@ import {
   setIsSharingLocation,
 } from "../../firebase/mutations";
 import useTaxiDriverContext from "../../context/taxiDriver-context";
+import useImagePicker from "../../hooks/useImagePicker";
+import useFirebaseStorage from "../../hooks/useFirebaseStorage";
 
 const TaxiHomeScreen: React.FC = () => {
   const { taxi } = useTaxiDriverContext();
-
+  const { selectedImage, errorMessage, handleImagePicker } = useImagePicker();
+  const { uploadFile } = useFirebaseStorage();
   const [isAvailable, setIsAvailable] = useState(taxi.available || false);
   const [isSyncingLocation, setIsSyncingLocation] = useState(
     taxi.isSharingLocation
@@ -33,8 +36,33 @@ const TaxiHomeScreen: React.FC = () => {
     });
   };
 
+  const handleUpload = async () => {
+    try {
+      const imageUri = await handleImagePicker();
+
+      if (!imageUri) {
+        return;
+      }
+
+      const imageName = `${taxi.id}.png`;
+
+      const response = await fetch(imageUri);
+      const blob = await response.blob();
+
+      await uploadFile(blob, imageName);
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    }
+  };
+
   return (
     <View style={styles.container}>
+      <View style={styles.profileImageContainer}>
+        <Image
+          source={{ uri: selectedImage ? selectedImage : null }}
+          style={styles.profileImage}
+        />
+      </View>
       <View
         style={{
           height: "30%",
@@ -90,6 +118,7 @@ const TaxiHomeScreen: React.FC = () => {
         <CustomButton onPressHandler={deleteTaxiUser}>
           Verwijder Gebruiker
         </CustomButton>
+        <CustomButton onPressHandler={handleUpload}>Kies foto</CustomButton>
       </View>
     </View>
   );
@@ -102,5 +131,16 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+  },
+  profileImageContainer: {
+    width: 60,
+    height: 60,
+    backgroundColor: "red",
+    borderRadius: 60 / 2,
+    overflow: "hidden",
+  },
+  profileImage: {
+    width: "100%",
+    aspectRatio: 1,
   },
 });

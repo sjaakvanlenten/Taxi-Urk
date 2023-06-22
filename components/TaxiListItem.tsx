@@ -10,6 +10,7 @@ import { db } from "../firebase/firebaseConfig";
 import { LatLng } from "react-native-maps";
 import useTheme from "../context/theme-context";
 import useFirebaseListener from "../hooks/useFirebaseListener";
+import useFirebaseStorage from "../hooks/useFirebaseStorage";
 
 type TaxiListItemProps = {
   name: string;
@@ -36,7 +37,7 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
   updateLocation,
 }) => {
   const { theme } = useTheme();
-
+  const { downloadFile, downloadURL } = useFirebaseStorage();
   const [trackLocation, setTrackLocation] = useState(false);
 
   const locationRef = ref(db, "locations/" + id);
@@ -58,6 +59,10 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
   };
 
   useEffect(() => {
+    downloadFile(id);
+  }, []);
+
+  useEffect(() => {
     if (!isSharingLocation && trackLocation) {
       setIsListenerActive(false);
       updateLocation(id, null);
@@ -76,7 +81,9 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
     >
       <View style={styles.headerContainer}>
         <Image
-          source={{ uri: "https://i.pravatar.cc/300" }}
+          source={{
+            uri: downloadURL ? downloadURL : "https://i.pravatar.cc/300",
+          }}
           style={styles.profileImage}
         />
         <View>
