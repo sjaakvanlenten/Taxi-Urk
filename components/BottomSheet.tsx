@@ -18,9 +18,9 @@ type BottomSheetProps = {
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 
-const BOTTOMSHEET_OFFSET = 0;
+const BOTTOMSHEET_OFFSET = 60;
 
-const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 2 + 100 + BOTTOMSHEET_OFFSET;
+const MAX_TRANSLATE_Y = -SCREEN_HEIGHT / 2 + 100;
 
 const DISTANCE_TO_SWIPE = 100;
 
@@ -50,7 +50,13 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     })
     .onUpdate((event) => {
       translateY.value = event.translationY + context.value.y;
-      translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
+      if (translateY.value < 0)
+        translateY.value = Math.max(translateY.value, MAX_TRANSLATE_Y);
+      if (translateY.value > 0)
+        translateY.value = Math.min(
+          translateY.value,
+          -MAX_TRANSLATE_Y + BOTTOMSHEET_OFFSET
+        );
     })
     .onEnd(() => {
       const shouldScrollToMax = translateY.value < 0;
@@ -69,14 +75,22 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
       }
 
       if (shouldScrollToMin) {
-        if (context.value.y >= -MAX_TRANSLATE_Y - DISTANCE_TO_SWIPE) {
+        if (
+          context.value.y >=
+          -MAX_TRANSLATE_Y + BOTTOMSHEET_OFFSET - DISTANCE_TO_SWIPE
+        ) {
           scrollTo(
-            translateY.value < -MAX_TRANSLATE_Y - DISTANCE_TO_SWIPE
+            translateY.value <
+              -MAX_TRANSLATE_Y + BOTTOMSHEET_OFFSET - DISTANCE_TO_SWIPE
               ? 0
-              : -MAX_TRANSLATE_Y
+              : -MAX_TRANSLATE_Y + BOTTOMSHEET_OFFSET
           );
         } else {
-          scrollTo(translateY.value < DISTANCE_TO_SWIPE ? 0 : -MAX_TRANSLATE_Y);
+          scrollTo(
+            translateY.value < DISTANCE_TO_SWIPE
+              ? 0
+              : -MAX_TRANSLATE_Y + BOTTOMSHEET_OFFSET
+          );
         }
       }
     });
@@ -92,7 +106,8 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     const height = interpolate(
       translateY.value,
       [0, MAX_TRANSLATE_Y],
-      [SCREEN_HEIGHT / 2, SCREEN_HEIGHT - 100]
+      [SCREEN_HEIGHT / 2, SCREEN_HEIGHT - 100],
+      Extrapolate.CLAMP
     );
     return {
       borderTopRightRadius: borderRadius,
@@ -106,7 +121,7 @@ const BottomSheet: React.FC<BottomSheetProps> = ({
     <Animated.View
       style={[
         {
-          top: SCREEN_HEIGHT / 2 - BOTTOMSHEET_OFFSET,
+          top: SCREEN_HEIGHT / 2,
           backgroundColor: theme.background,
         },
         styles.bottomSheetContainer,
