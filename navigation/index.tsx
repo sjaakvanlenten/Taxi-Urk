@@ -7,7 +7,6 @@ import WelcomeScreen from "../screens";
 import CreateNewTaxiScreen from "../screens/Taxi/CreateNewTaxiScreen";
 import useTaxiDriverContext from "../context/taxiDriver-context";
 import { RootStackParamList } from "./types";
-import TestingScreen from "../screens/Test/TestingScreen";
 import { light } from "../themes/theme";
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -47,13 +46,6 @@ const Navigator = () => {
             name="ClientHome"
             component={ClientHomeScreen}
             options={{ headerShown: false, animation: "slide_from_left" }}
-          />
-        </Stack.Group>
-        <Stack.Group>
-          <Stack.Screen
-            name="TestingScreen"
-            component={TestingScreen}
-            options={{ headerShown: false }}
           />
         </Stack.Group>
       </Stack.Navigator>
