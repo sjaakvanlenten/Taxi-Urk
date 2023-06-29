@@ -1,18 +1,20 @@
-import notifee, { EventType } from "@notifee/react-native";
+import notifee, { Event, EventType } from "@notifee/react-native";
 import { useEffect, useState } from "react";
 
 const useNotifications = () => {
-  const [notificationId, setNotificationId] = useState("");
+  const [notificationId, setNotificationId] = useState<string | null>("");
 
   useEffect(() => {
+    const handleBackgroundEvent = async (event: Event) => {
+      // Handle background events if needed
+    };
+
     if (notificationId) {
-      notifee.onBackgroundEvent(async (event) => {
-        //
-      });
+      notifee.onBackgroundEvent(handleBackgroundEvent);
     }
   }, [notificationId]);
 
-  async function onDisplayNotification() {
+  const onDisplayNotification = async () => {
     await notifee.requestPermission();
 
     const channelId = await notifee.createChannel({
@@ -32,11 +34,14 @@ const useNotifications = () => {
       },
     });
     setNotificationId(notification);
-  }
+  };
 
-  async function cancelNotification() {
-    if (notificationId) await notifee.cancelNotification(notificationId);
-  }
+  const cancelNotification = async () => {
+    if (notificationId) {
+      await notifee.cancelNotification(notificationId);
+      setNotificationId(null);
+    }
+  };
 
   return { onDisplayNotification, notificationId, cancelNotification };
 };

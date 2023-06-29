@@ -31,7 +31,7 @@ const Map = ({ data, enableInteraction, taxis }: MapProps) => {
     >
       {data.length !== 0 &&
         data.map((location) => {
-          const { name } = taxis.find(
+          const { name, image: imageUri } = taxis.find(
             ({ id: taxiId }) => taxiId === location.id
           );
           return (
@@ -43,7 +43,9 @@ const Map = ({ data, enableInteraction, taxis }: MapProps) => {
             >
               <View style={styles.marker}>
                 <Image
-                  source={{ uri: "https://i.pravatar.cc/300" }}
+                  source={{
+                    uri: imageUri ? imageUri : "https://i.pravatar.cc/300",
+                  }}
                   resizeMode="contain"
                   style={styles.profileImage}
                 />

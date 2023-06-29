@@ -4,6 +4,12 @@ import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DataSnapshot } from "firebase/database";
 import { FlashList } from "@shopify/flash-list";
 
+import { light, dark } from "../../themes/theme";
+import { Ionicons } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
+import { FontAwesome5 } from "@expo/vector-icons";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+
 import BottomSheet from "../../components/BottomSheet";
 import TaxiListItem from "../../components/TaxiListItem";
 import Map from "../../components/Map";
@@ -17,16 +23,18 @@ import useFirebaseListener, {
   ListenerCallback,
 } from "../../hooks/useFirebaseListener";
 import useFirebaseStorage from "../../hooks/useFirebaseStorage";
+import useTheme from "../../context/theme-context";
 
 export type locationData = {
   id: string;
   location: LatLng;
 };
 
-const TaxiHomeScreen: React.FC = () => {
+const ClientHomeScreen: React.FC = () => {
   const [locations, setLocations] = useState<locationData[]>([]);
   const [bottomSheetExpanded, setBottomSheetExpanded] = useState(false);
   const { downloadFile } = useFirebaseStorage();
+  const { theme, toggleTheme } = useTheme();
 
   const TaxiListenerCallback: ListenerCallback<Array<Taxi>> = useCallback(
     async (snapshot: DataSnapshot) => {
@@ -85,7 +93,35 @@ const TaxiHomeScreen: React.FC = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <TopMenu />
+      <TopMenu>
+        <Ionicons
+          name="md-settings-sharp"
+          size={28}
+          color={theme.iconBackGround}
+        />
+        <FontAwesome5 name="taxi" size={28} color={theme.iconBackGround} />
+        <MaterialCommunityIcons
+          name="map-marker"
+          size={28}
+          color={theme.iconBackGround}
+        />
+        {theme.name === "light" ? (
+          <Feather
+            name="sun"
+            size={28}
+            color={light.iconBackGround}
+            onPress={toggleTheme}
+          />
+        ) : (
+          <Feather
+            name="moon"
+            size={28}
+            color={dark.iconBackGround}
+            onPress={toggleTheme}
+          />
+        )}
+      </TopMenu>
+
       <Map
         data={locations}
         enableInteraction={bottomSheetExpanded}
@@ -119,4 +155,4 @@ const TaxiHomeScreen: React.FC = () => {
   );
 };
 
-export default TaxiHomeScreen;
+export default ClientHomeScreen;

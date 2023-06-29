@@ -5,7 +5,6 @@ import { RootStackScreenProps } from "../navigation/types";
 import { StatusBar } from "expo-status-bar";
 
 import Animated, {
-  Easing,
   useAnimatedStyle,
   useSharedValue,
   withTiming,
@@ -34,12 +33,12 @@ const WelcomeScreen = () => {
   function animate(direction: Direction, componentWidth?: number) {
     if (direction == Direction.left) {
       translate_X_Left.value = withTiming(25, {
-        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        duration: 350,
       });
     }
     if (direction == Direction.right) {
       translate_X_Right.value = withTiming(SCREEN_WIDTH - componentWidth - 25, {
-        easing: Easing.bezier(0.25, 0.1, 0.25, 1),
+        duration: 350,
       });
     }
   }

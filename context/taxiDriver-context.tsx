@@ -4,6 +4,7 @@ import {
   useContext,
   Dispatch,
   SetStateAction,
+  ReactNode,
 } from "react";
 import { Taxi } from "../types/typings";
 
@@ -16,7 +17,11 @@ const taxiDriverContext = createContext<TaxiDriverContextType | undefined>(
   undefined
 );
 
-export const TaxiDriverProvider = ({ children }) => {
+type TaxiDriverProviderProps = {
+  children: ReactNode;
+};
+
+export const TaxiDriverProvider = ({ children }: TaxiDriverProviderProps) => {
   const [taxi, setTaxi] = useState<Taxi | null>(null);
 
   return (

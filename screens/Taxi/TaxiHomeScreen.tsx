@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { StyleSheet, Text, View, Switch, Image } from "react-native";
+import * as SecureStore from "expo-secure-store";
 
-import useLocation from "../../hooks/useLocation";
 import CustomButton from "../../components/CustomButton";
 import {
   setAvailability,
@@ -10,8 +10,8 @@ import {
 import useTaxiDriverContext from "../../context/taxiDriver-context";
 import useImagePicker, { STORAGE_KEY } from "../../hooks/useImagePicker";
 import useFirebaseStorage from "../../hooks/useFirebaseStorage";
+import useLocation from "../../hooks/useLocation";
 import useNotifications from "../../hooks/useNotifications";
-import * as SecureStore from "expo-secure-store";
 
 const TaxiHomeScreen: React.FC = () => {
   const { taxi } = useTaxiDriverContext();

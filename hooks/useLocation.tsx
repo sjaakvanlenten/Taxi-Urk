@@ -36,8 +36,8 @@ TaskManager.defineTask(
   }
 );
 
-export default (shouldTrack: boolean) => {
-  const [errorMsg, setErrorMsg] = useState(null);
+const useLocation = (shouldTrack: boolean) => {
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   useEffect(() => {
     const startTracking = async () => {
@@ -63,20 +63,31 @@ export default (shouldTrack: boolean) => {
           },
         });
       } catch (e) {
-        setErrorMsg(e);
+        setErrorMsg(e.message);
+      }
+    };
+
+    const stopTracking = async () => {
+      const tracking = await TaskManager.isTaskRegisteredAsync(
+        LOCATION_TRACKING
+      );
+      if (tracking) {
+        await stopLocationUpdatesAsync(LOCATION_TRACKING);
       }
     };
 
     if (shouldTrack) {
       startTracking();
     } else {
-      TaskManager.isTaskRegisteredAsync(LOCATION_TRACKING).then((tracking) => {
-        if (tracking) {
-          stopLocationUpdatesAsync(LOCATION_TRACKING);
-        }
-      });
+      stopTracking();
     }
+
+    return () => {
+      stopTracking();
+    };
   }, [shouldTrack]);
 
   return [errorMsg];
 };
+
+export default useLocation;
