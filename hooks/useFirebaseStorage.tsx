@@ -35,7 +35,7 @@ const useFirebaseStorage = () => {
     const cachedImage = await SecureStore.getItemAsync(id);
     if (cachedImage) {
       setDownloadURL(cachedImage);
-      return;
+      return cachedImage;
     }
 
     const imageURI = await getDownloadURL(
@@ -49,6 +49,7 @@ const useFirebaseStorage = () => {
     if (imageURI) {
       await SecureStore.setItemAsync(id, imageURI);
       setDownloadURL(imageURI);
+      return imageURI;
     }
   };
 

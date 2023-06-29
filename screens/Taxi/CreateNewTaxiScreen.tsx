@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from "react";
+import { useCallback, useRef } from "react";
 import {
   StyleSheet,
   Text,
@@ -11,6 +11,7 @@ import {
 import { get } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
 import { useForm, FieldValues, useFormState } from "react-hook-form";
+import * as SecureStore from "expo-secure-store";
 import { Feather } from "@expo/vector-icons";
 
 import { queryByPhoneNumber } from "../../firebase/queries";
@@ -18,10 +19,10 @@ import { RootStackScreenProps } from "../../navigation/types";
 import CustomButton from "../../components/CustomButton";
 import CustomInput from "../../components/CustomInput";
 
-import { storeTaxiUserLocally } from "../../async-storage/mutations";
 import { pushNewTaxiRef } from "../../firebase/mutations";
 import { resetNavigationState } from "../../navigation/actions";
 import { light } from "../../themes/theme";
+import useTaxiDriverContext from "../../context/taxiDriver-context";
 
 export interface FormData extends FieldValues {
   name: string;
@@ -48,15 +49,28 @@ const CreateNewTaxiScreen: React.FC = () => {
   const navigation =
     useNavigation<RootStackScreenProps<"TaxiHome">["navigation"]>();
 
+  const { setTaxi } = useTaxiDriverContext();
+
   const addTaxiUserToDatabase = (data: FormData) => {
     const query = queryByPhoneNumber(data.phoneNumber);
 
     get(query).then((snapshot) => {
       if (!snapshot.exists()) {
         try {
+          //push to db
           pushNewTaxiRef(data).then((newTaxiRef) => {
-            storeTaxiUserLocally(newTaxiRef.key).then(() => {
-              resetNavigationState(navigation, { taxiRef: newTaxiRef.key });
+            //push to local secureStore
+            SecureStore.setItemAsync("user", newTaxiRef.key).then(() => {
+              //set application context
+              setTaxi({
+                id: newTaxiRef.key,
+                isSharingLocation: false,
+                available: false,
+                name: data.name,
+                image: "https://i.pravatar.cc/300",
+                phone: data.phoneNumber,
+              });
+              resetNavigationState(navigation);
             });
           });
         } catch (e) {

@@ -1,9 +1,9 @@
 import React from "react";
-import MapView, { Callout, Marker } from "react-native-maps";
+import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
 import useTheme from "../context/theme-context";
 import { locationData } from "../screens/Client/ClientHomeScreen";
 import { View, StyleSheet, Image, Text } from "react-native";
-import { Taxi } from "../typings";
+import { Taxi } from "../types/typings";
 
 type MapProps = {
   data: locationData[];
@@ -15,6 +15,7 @@ const Map = ({ data, enableInteraction, taxis }: MapProps) => {
   const { theme } = useTheme();
   return (
     <MapView
+      provider={PROVIDER_GOOGLE}
       style={{ flex: 1, padding: 20 }}
       customMapStyle={theme.mapStyle}
       scrollEnabled={!enableInteraction}

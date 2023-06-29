@@ -3,20 +3,22 @@ import { StyleSheet, Text, View, Switch, Image } from "react-native";
 
 import useLocation from "../../hooks/useLocation";
 import CustomButton from "../../components/CustomButton";
-import { deleteTaxiUser } from "../../async-storage/mutations";
 import {
   setAvailability,
   setIsSharingLocation,
 } from "../../firebase/mutations";
 import useTaxiDriverContext from "../../context/taxiDriver-context";
-import useImagePicker from "../../hooks/useImagePicker";
+import useImagePicker, { STORAGE_KEY } from "../../hooks/useImagePicker";
 import useFirebaseStorage from "../../hooks/useFirebaseStorage";
+import useNotifications from "../../hooks/useNotifications";
+import * as SecureStore from "expo-secure-store";
 
 const TaxiHomeScreen: React.FC = () => {
   const { taxi } = useTaxiDriverContext();
   const { selectedImage, errorMessage, handleImagePicker } = useImagePicker();
   const { uploadFile } = useFirebaseStorage();
-  const [isAvailable, setIsAvailable] = useState(taxi.available || false);
+  const [isAvailable, setIsAvailable] = useState(taxi.available);
+  const { onDisplayNotification, cancelNotification } = useNotifications();
   const [isSyncingLocation, setIsSyncingLocation] = useState(
     taxi.isSharingLocation
   );
@@ -34,6 +36,7 @@ const TaxiHomeScreen: React.FC = () => {
       previousState && setIsSyncingLocation(false);
       return !previousState;
     });
+    isAvailable ? cancelNotification() : onDisplayNotification();
   };
 
   const handleUpload = async () => {
@@ -58,10 +61,9 @@ const TaxiHomeScreen: React.FC = () => {
   return (
     <View style={styles.container}>
       <View style={styles.profileImageContainer}>
-        <Image
-          source={{ uri: selectedImage ? selectedImage : null }}
-          style={styles.profileImage}
-        />
+        {selectedImage && (
+          <Image source={{ uri: selectedImage }} style={styles.profileImage} />
+        )}
       </View>
       <View
         style={{
@@ -76,7 +78,7 @@ const TaxiHomeScreen: React.FC = () => {
           <View
             style={{
               flexDirection: "row",
-
+              marginBottom: 20,
               width: "60%",
               justifyContent: "space-between",
               alignItems: "center",
@@ -95,7 +97,7 @@ const TaxiHomeScreen: React.FC = () => {
           <View
             style={{
               flexDirection: "row",
-
+              marginBottom: 20,
               width: "60%",
               justifyContent: "space-between",
               alignItems: "center",
@@ -115,7 +117,12 @@ const TaxiHomeScreen: React.FC = () => {
             />
           </View>
         </View>
-        <CustomButton onPressHandler={deleteTaxiUser}>
+        <CustomButton
+          onPressHandler={() => {
+            SecureStore.deleteItemAsync("user");
+            SecureStore.deleteItemAsync(STORAGE_KEY);
+          }}
+        >
           Verwijder Gebruiker
         </CustomButton>
         <CustomButton onPressHandler={handleUpload}>Kies foto</CustomButton>

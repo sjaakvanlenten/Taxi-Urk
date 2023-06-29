@@ -1,15 +1,15 @@
 import { useState, useEffect, useCallback } from "react";
 import { StyleSheet, View } from "react-native";
-import * as Font from "expo-font";
 
+import * as Font from "expo-font";
+import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import useTaxiDriverContext from "../context/taxiDriver-context";
 import { light } from "../themes/theme";
 import { child, get } from "firebase/database";
 import { taxisRef } from "../firebase/queries";
-import { Taxi } from "../typings";
+import { Taxi } from "../types/typings";
 
 SplashScreen.preventAutoHideAsync();
 
@@ -20,7 +20,7 @@ export default function AppBootstrap({ children }) {
   useEffect(() => {
     async function prepare() {
       try {
-        const taxiId = await AsyncStorage.getItem("@user");
+        const taxiId = await SecureStore.getItemAsync("user");
         if (taxiId !== null) {
           await get(child(taxisRef, `/${taxiId}`))
             .then((snapshot) => {

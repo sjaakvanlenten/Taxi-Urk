@@ -4,4 +4,5 @@ export type Taxi = {
   available: boolean;
   name: string;
   phone: string;
+  image: string;
 };

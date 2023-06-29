@@ -1,4 +1,5 @@
 import React, { useCallback, useState } from "react";
+import { ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DataSnapshot } from "firebase/database";
 import { FlashList } from "@shopify/flash-list";
@@ -11,8 +12,11 @@ import TopMenu from "../../components/TopMenu";
 import { sortByAvailability } from "../../firebase/queries";
 
 import { LatLng } from "react-native-maps";
-import { Taxi } from "../../typings";
-import useFirebaseListener from "../../hooks/useFirebaseListener";
+import { Taxi } from "../../types/typings";
+import useFirebaseListener, {
+  ListenerCallback,
+} from "../../hooks/useFirebaseListener";
+import useFirebaseStorage from "../../hooks/useFirebaseStorage";
 
 export type locationData = {
   id: string;
@@ -22,19 +26,28 @@ export type locationData = {
 const TaxiHomeScreen: React.FC = () => {
   const [locations, setLocations] = useState<locationData[]>([]);
   const [bottomSheetExpanded, setBottomSheetExpanded] = useState(false);
+  const { downloadFile } = useFirebaseStorage();
 
-  const TaxiListenerCallback = useCallback((snapshot: DataSnapshot) => {
-    if (snapshot.exists()) {
-      const arr = [];
-      snapshot.forEach((childSnapshot) => {
-        const item = childSnapshot.val();
-        item.id = childSnapshot.key;
+  const TaxiListenerCallback: ListenerCallback<Array<Taxi>> = useCallback(
+    async (snapshot: DataSnapshot) => {
+      if (snapshot.exists()) {
+        const promises = [];
+        snapshot.forEach((childSnapshot) => {
+          const item = childSnapshot.val();
+          item.id = childSnapshot.key;
+          const promise = downloadFile(childSnapshot.key).then((imageUri) => {
+            item.image = imageUri;
+            return item;
+          });
+          promises.push(promise);
+        });
 
-        arr.push(item);
-      });
-      return arr.reverse();
-    }
-  }, []);
+        const arr = await Promise.all(promises);
+        return arr.reverse();
+      }
+    },
+    []
+  );
 
   const { data: taxis }: { data: Taxi[] } = useFirebaseListener({
     callback: TaxiListenerCallback,
@@ -58,7 +71,7 @@ const TaxiHomeScreen: React.FC = () => {
     });
   };
 
-  const locationListenerCallback = useCallback(
+  const locationListenerCallback: ListenerCallback<void> = useCallback(
     (snapshot: DataSnapshot) => {
       if (snapshot.exists()) {
         const id = snapshot.key;
@@ -80,22 +93,27 @@ const TaxiHomeScreen: React.FC = () => {
       />
 
       <BottomSheet onStateChange={setBottomSheetExpanded}>
-        <FlashList
-          data={taxis}
-          renderItem={({ item: taxi }) => (
-            <TaxiListItem
-              name={taxi.name}
-              id={taxi.id}
-              phone={taxi.phone}
-              available={taxi.available}
-              isSharingLocation={taxi.isSharingLocation}
-              listenerCallback={locationListenerCallback}
-              updateLocation={updateLocations}
-            />
-          )}
-          estimatedItemSize={80}
-          showsVerticalScrollIndicator={false}
-        />
+        {taxis ? (
+          <FlashList
+            data={taxis}
+            renderItem={({ item: taxi }) => (
+              <TaxiListItem
+                name={taxi.name}
+                id={taxi.id}
+                phone={taxi.phone}
+                available={taxi.available}
+                image={taxi.image}
+                isSharingLocation={taxi.isSharingLocation}
+                listenerCallback={locationListenerCallback}
+                updateLocation={updateLocations}
+              />
+            )}
+            estimatedItemSize={80}
+            showsVerticalScrollIndicator={false}
+          />
+        ) : (
+          <ActivityIndicator size={48} color="#FFFFFF" />
+        )}
       </BottomSheet>
     </GestureHandlerRootView>
   );

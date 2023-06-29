@@ -1,20 +1,26 @@
 import { useEffect, useState } from "react";
-import { Query, Unsubscribe, onValue, ref } from "firebase/database";
+import {
+  DataSnapshot,
+  Query,
+  Unsubscribe,
+  onValue,
+  ref,
+} from "firebase/database";
 import { db } from "../firebase/firebaseConfig";
 
-type ListenerCallback = (snapshot: any) => void;
+export type ListenerCallback<T> = (snapshot: DataSnapshot) => Promise<T> | T;
 
-interface UseFirebaseListenerOptions {
+interface UseFirebaseListenerOptions<T> {
   query?: Query;
-  callback?: ListenerCallback;
+  callback?: ListenerCallback<T>;
   isActiveByDefault?: boolean;
 }
 
-const useFirebaseListener = ({
+const useFirebaseListener = <T,>({
   query,
   callback,
   isActiveByDefault = false,
-}: UseFirebaseListenerOptions) => {
+}: UseFirebaseListenerOptions<T>) => {
   const [isListenerActive, setIsListenerActive] = useState(isActiveByDefault);
   const [error, setError] = useState<any>(null);
   const [data, setData] = useState(null);
@@ -29,10 +35,14 @@ const useFirebaseListener = ({
     if (isListenerActive) {
       listener = onValue(
         listenerQuery,
-        (snapshot) => {
+        async (snapshot) => {
           if (callback) {
-            const result = callback(snapshot);
-            setData(result);
+            try {
+              const result = await callback(snapshot);
+              setData(result);
+            } catch (error) {
+              setError(error);
+            }
           }
         },
         (error) => {

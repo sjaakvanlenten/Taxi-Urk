@@ -5,7 +5,7 @@ import {
   Dispatch,
   SetStateAction,
 } from "react";
-import { Taxi } from "../typings";
+import { Taxi } from "../types/typings";
 
 type TaxiDriverContextType = {
   taxi: Taxi;

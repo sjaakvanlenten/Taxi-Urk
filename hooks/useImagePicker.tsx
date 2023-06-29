@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import * as ImagePicker from "expo-image-picker";
 import * as SecureStore from "expo-secure-store";
 
-const STORAGE_KEY = "selectedImage";
+export const STORAGE_KEY = "selectedImage";
 
 const useImagePicker = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);

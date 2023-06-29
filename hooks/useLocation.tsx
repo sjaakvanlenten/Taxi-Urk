@@ -11,7 +11,7 @@ import * as TaskManager from "expo-task-manager";
 import { TaskManagerTaskBody } from "expo-task-manager";
 
 import { updateLocation } from "../firebase/mutations";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 const LOCATION_TRACKING = "background-location-task";
 
@@ -30,7 +30,7 @@ TaskManager.defineTask(
       return;
     }
     if (locations) {
-      const taxiId = await AsyncStorage.getItem("@user");
+      const taxiId = await SecureStore.getItemAsync("user");
       updateLocation(taxiId, locations[0]?.coords);
     }
   }
