@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { ActivityIndicator } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DataSnapshot } from "firebase/database";
@@ -93,7 +93,7 @@ const ClientHomeScreen: React.FC = () => {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <TopMenu>
+      <TopMenu backgroundColor={theme.background}>
         <Ionicons
           name="md-settings-sharp"
           size={28}

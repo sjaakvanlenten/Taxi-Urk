@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { useState, useEffect } from "react";
+import { useState, useEffect, FC } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
@@ -10,6 +10,12 @@ import { db } from "../firebase/firebaseConfig";
 import { LatLng } from "react-native-maps";
 import useTheme from "../context/theme-context";
 import useFirebaseListener from "../hooks/useFirebaseListener";
+import Animated, {
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 type TaxiListItemProps = {
   name: string;
@@ -27,7 +33,7 @@ const rippleConfig = {
   radius: 22,
 };
 
-const TaxiListItem: React.FC<TaxiListItemProps> = ({
+const TaxiListItem: FC<TaxiListItemProps> = ({
   name,
   id,
   phone,
@@ -67,13 +73,34 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
     }
   }, [isSharingLocation]);
 
+  const animatedValue = useSharedValue(0);
+
+  useEffect(() => {
+    animatedValue.value = withTiming(1, {
+      duration: 150,
+      easing: Easing.inOut(Easing.ease),
+    });
+  }, []);
+
+  const rStyle = useAnimatedStyle(() => {
+    return {
+      opacity: animatedValue.value,
+      transform: [
+        {
+          scale: animatedValue.value,
+        },
+      ],
+    };
+  });
+
   return (
-    <View
+    <Animated.View
       style={[
         styles.itemContainer,
         {
           backgroundColor: theme.listItemBackground,
         },
+        rStyle,
       ]}
     >
       <View style={styles.headerContainer}>
@@ -142,7 +169,7 @@ const TaxiListItem: React.FC<TaxiListItemProps> = ({
           <FontAwesome5 name="phone" size={22} color="#3EB489" />
         </Pressable>
       </View>
-    </View>
+    </Animated.View>
   );
 };
 

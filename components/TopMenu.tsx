@@ -1,15 +1,15 @@
 import { StyleSheet, View, Dimensions, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState, Children, FC, ReactNode } from "react";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
 import MenuButton from "./buttons/MenuButton";
-import useTheme from "../context/theme-context";
 
 type TopMenuProps = {
-  children?: React.ReactNode;
+  children?: ReactNode;
+  backgroundColor: string;
 };
 
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
@@ -20,26 +20,23 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const MENU_WIDTH = SCREEN_WIDTH - MENU_HORIZONTAL_OFFSET * 2;
 
-const MARGIN = (MENU_WIDTH - 50) / 4;
-
 const rippleConfig = {
   borderless: true,
   color: "#de932c",
   radius: 25,
 };
 
-const TopMenu: React.FC<TopMenuProps> = ({ children }) => {
+const TopMenu: FC<TopMenuProps> = ({ children, backgroundColor }) => {
   const [menuExpanded, setMenuExpanded] = useState(false);
 
-  const { theme } = useTheme();
-
   const translateX = useSharedValue(0);
+  const MARGIN = (MENU_WIDTH - 50) / Children.count(children);
 
   useEffect(() => {
     translateX.value = withTiming(menuExpanded ? MARGIN : 0);
   }, [menuExpanded]);
 
-  const animatedButtonStyles = React.Children.map(children, (child, index) =>
+  const animatedButtonStyles = Children.map(children, (_, index) =>
     useAnimatedStyle(() => ({
       transform: [{ translateX: translateX.value * (index + 1) }],
     }))
@@ -53,7 +50,7 @@ const TopMenu: React.FC<TopMenuProps> = ({ children }) => {
       ]}
     >
       <MenuButton isPressed={menuExpanded} setIsPressed={setMenuExpanded} />
-      {React.Children.map(children, (child, index) => (
+      {Children.map(children, (child, index) => (
         <AnimatedPressable
           key={index}
           style={[
@@ -61,7 +58,7 @@ const TopMenu: React.FC<TopMenuProps> = ({ children }) => {
             animatedButtonStyles[index],
             {
               elevation: menuExpanded ? 10 : 0,
-              backgroundColor: theme.background,
+              backgroundColor: backgroundColor,
             },
           ]}
           android_ripple={{ ...rippleConfig }}
