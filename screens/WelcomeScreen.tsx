@@ -21,8 +21,6 @@ enum Direction {
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 const WelcomeScreen = () => {
   const navigation =
     useNavigation<RootStackScreenProps<"Welcome">["navigation"]>();
@@ -62,24 +60,28 @@ const WelcomeScreen = () => {
   return (
     <View style={{ flex: 1, justifyContent: "center" }}>
       <View style={styles.container}>
-        <AnimatedPressable
-          onPress={() => navigation.navigate("ClientHome")}
-          onLayout={() => {
-            animate(Direction.left);
-          }}
-          style={rLeftButtonStyle}
-        >
-          <LeftNavButton buttonText="Ik zoek een Taxi" />
-        </AnimatedPressable>
-        <AnimatedPressable
-          onPress={() => navigation.navigate("CreateNewTaxi")}
-          onLayout={(event) => {
-            animate(Direction.right, event.nativeEvent.layout.width);
-          }}
-          style={[rRightButtonStyle, { alignSelf: "flex-start" }]}
-        >
-          <RightNavButton buttonText="Ik ben een Taxi" />
-        </AnimatedPressable>
+        <Animated.View style={rLeftButtonStyle}>
+          <Pressable
+            onPress={() => navigation.navigate("ClientHome")}
+            onLayout={() => {
+              animate(Direction.left);
+            }}
+            testID="leftButton"
+          >
+            <LeftNavButton buttonText="Ik zoek een Taxi" />
+          </Pressable>
+        </Animated.View>
+        <Animated.View style={[rRightButtonStyle, { alignSelf: "flex-start" }]}>
+          <Pressable
+            onPress={() => navigation.navigate("CreateNewTaxi")}
+            onLayout={(event) => {
+              animate(Direction.right, event.nativeEvent.layout.width);
+            }}
+            testID="rightButton"
+          >
+            <RightNavButton buttonText="Ik ben een Taxi" />
+          </Pressable>
+        </Animated.View>
       </View>
 
       <StatusBar backgroundColor={light.black} style="light" />

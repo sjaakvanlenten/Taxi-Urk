@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 
 import TaxiHomeScreen from "../screens/Taxi/TaxiHomeScreen";
 import ClientHomeScreen from "../screens/Client/ClientHomeScreen";
-import WelcomeScreen from "../screens";
+import WelcomeScreen from "../screens/WelcomeScreen";
 import CreateNewTaxiScreen from "../screens/Taxi/CreateNewTaxiScreen";
 import useTaxiDriverContext from "../context/taxiDriver-context";
 import { RootStackParamList } from "./types";

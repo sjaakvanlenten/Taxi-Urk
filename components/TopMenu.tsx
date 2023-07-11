@@ -12,8 +12,6 @@ type TopMenuProps = {
   backgroundColor: string;
 };
 
-const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-
 const MENU_HORIZONTAL_OFFSET = 10;
 
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
@@ -51,7 +49,7 @@ const TopMenu: FC<TopMenuProps> = ({ children, backgroundColor }) => {
     >
       <MenuButton isPressed={menuExpanded} setIsPressed={setMenuExpanded} />
       {Children.map(children, (child, index) => (
-        <AnimatedPressable
+        <Animated.View
           key={index}
           style={[
             styles.menuButton,
@@ -61,10 +59,9 @@ const TopMenu: FC<TopMenuProps> = ({ children, backgroundColor }) => {
               backgroundColor: backgroundColor,
             },
           ]}
-          android_ripple={{ ...rippleConfig }}
         >
-          {child}
-        </AnimatedPressable>
+          <Pressable android_ripple={{ ...rippleConfig }}>{child}</Pressable>
+        </Animated.View>
       ))}
     </View>
   );
