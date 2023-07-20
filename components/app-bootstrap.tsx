@@ -95,11 +95,10 @@ export default function AppBootstrap({ children }) {
     const prepare = async () => {
       if (userId) {
         await fetchTaxiData(userId, setTaxi);
+        setAppIsReady(true);
       }
 
       // Other initialization tasks can be added here
-
-      setAppIsReady(true);
     };
 
     prepare();

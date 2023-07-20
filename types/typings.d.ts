@@ -5,4 +5,5 @@ export type Taxi = {
   name: string;
   phone: string;
   image: string;
+  statusText?: string;
 };

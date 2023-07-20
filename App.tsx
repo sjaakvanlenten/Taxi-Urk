@@ -5,17 +5,20 @@ import { TaxiDriverProvider } from "./context/taxiDriver-context";
 import Navigator from "./navigation";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { ThemeProvider } from "./context/theme-context";
+import { RootSiblingParent } from "react-native-root-siblings";
 
 export default function App(): ReactElement {
   return (
-    <TaxiDriverProvider>
-      <SafeAreaProvider>
-        <ThemeProvider>
-          <AppBootstrap>
-            <Navigator />
-          </AppBootstrap>
-        </ThemeProvider>
-      </SafeAreaProvider>
-    </TaxiDriverProvider>
+    <RootSiblingParent>
+      <TaxiDriverProvider>
+        <SafeAreaProvider>
+          <ThemeProvider>
+            <AppBootstrap>
+              <Navigator />
+            </AppBootstrap>
+          </ThemeProvider>
+        </SafeAreaProvider>
+      </TaxiDriverProvider>
+    </RootSiblingParent>
   );
 }

@@ -9,6 +9,7 @@ export const pushNewTaxiRef = async (data: FormData) => {
     isSharingLocation: false,
     name: data.name,
     phone: data.phoneNumber,
+    statusText: "",
   });
 
   set(ref(db, "locations/" + reference.key), {
@@ -38,5 +39,11 @@ export const setAvailability = (taxiRef: string, state: boolean) => {
 export const setIsSharingLocation = (taxiRef: string, state: boolean) => {
   const updates = {};
   updates["/taxis/" + taxiRef + "/isSharingLocation"] = state;
+  update(ref(db), updates);
+};
+
+export const setStatusTextDB = (taxiRef: string, text: string) => {
+  const updates = {};
+  updates["/taxis/" + taxiRef + "/statusText"] = text;
   update(ref(db), updates);
 };

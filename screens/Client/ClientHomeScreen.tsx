@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import { ActivityIndicator } from "react-native";
+import { ActivityIndicator, View } from "react-native";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { DataSnapshot } from "firebase/database";
 import { FlashList } from "@shopify/flash-list";
@@ -148,7 +148,15 @@ const ClientHomeScreen: React.FC = () => {
             showsVerticalScrollIndicator={false}
           />
         ) : (
-          <ActivityIndicator size={48} color="#FFFFFF" />
+          <View
+            style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
+          >
+            <ActivityIndicator
+              size={48}
+              color="#FFFFFF"
+              style={{ marginBottom: 200 }}
+            />
+          </View>
         )}
       </BottomSheet>
     </GestureHandlerRootView>

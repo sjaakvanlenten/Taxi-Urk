@@ -1,20 +1,31 @@
-import { useState } from "react";
-import { StyleSheet, Text, View, Switch, Image } from "react-native";
-import * as SecureStore from "expo-secure-store";
-
-import CustomButton from "../../components/CustomButton";
+import { useCallback, useState } from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  Switch,
+  Image,
+  Keyboard,
+  Pressable,
+} from "react-native";
+import { Feather } from "@expo/vector-icons";
 import {
   setAvailability,
   setIsSharingLocation,
+  setStatusTextDB,
 } from "../../firebase/mutations";
 import useTaxiDriverContext from "../../context/taxiDriver-context";
-import useImagePicker, { STORAGE_KEY } from "../../hooks/useImagePicker";
+import useImagePicker from "../../hooks/useImagePicker";
 import useFirebaseStorage from "../../hooks/useFirebaseStorage";
 import useLocation from "../../hooks/useLocation";
 import useNotifications from "../../hooks/useNotifications";
+import { SafeAreaView } from "react-native-safe-area-context";
+import useTheme from "../../context/theme-context";
+import MessageBox from "../../components/MessageBox";
+import Toast from "react-native-root-toast";
 
 const TaxiHomeScreen: React.FC = () => {
-  const { taxi } = useTaxiDriverContext();
+  const { taxi, setTaxi } = useTaxiDriverContext();
   const { selectedImage, errorMessage, handleImagePicker } = useImagePicker();
   const { uploadFile } = useFirebaseStorage();
   const [isAvailable, setIsAvailable] = useState(taxi.available);
@@ -22,6 +33,8 @@ const TaxiHomeScreen: React.FC = () => {
   const [isSyncingLocation, setIsSyncingLocation] = useState(
     taxi.isSharingLocation
   );
+
+  const { theme } = useTheme();
 
   const [errorMsg] = useLocation(isSyncingLocation);
 
@@ -58,76 +71,112 @@ const TaxiHomeScreen: React.FC = () => {
     }
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.profileImageContainer}>
-        {selectedImage && (
-          <Image source={{ uri: selectedImage }} style={styles.profileImage} />
-        )}
-      </View>
-      <View
-        style={{
-          height: "30%",
-          justifyContent: "space-evenly",
+  const StatusTextSubmitHandler = useCallback(
+    (text: string) => {
+      setStatusTextDB(taxi.id, text);
+      setTaxi({
+        ...taxi,
+        statusText: text,
+      });
+    },
+    [taxi]
+  );
 
-          alignItems: "center",
-          width: "80%",
+  const statusTextDeleteHandler = useCallback(() => {
+    setStatusTextDB(taxi.id, "");
+    setTaxi({
+      ...taxi,
+      statusText: "",
+    });
+    Toast.show("Bericht verwijderd", {
+      duration: Toast.durations.SHORT,
+    });
+  }, [taxi]);
+
+  return (
+    <SafeAreaView style={{ flex: 1 }}>
+      <Pressable
+        style={{ flex: 1, padding: 10, justifyContent: "space-between" }}
+        onPress={() => {
+          Keyboard.dismiss();
         }}
       >
-        <View style={{ alignItems: "center", alignSelf: "stretch" }}>
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: 20,
-              width: "60%",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text>Beschikbaarheid</Text>
-            <Switch
-              style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }}
-              trackColor={{ false: "#767577", true: "#81b0ff" }}
-              thumbColor={isAvailable ? "#f5dd4b" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleAvailability}
-              value={isAvailable}
-            />
+        <View style={[styles.headerContainer, { marginHorizontal: -5 }]}>
+          <View style={{ flex: 1, alignItems: "flex-start" }}>
+            <Feather name="menu" size={26} color="black" />
           </View>
-          <View
-            style={{
-              flexDirection: "row",
-              marginBottom: 20,
-              width: "60%",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-            <Text style={{ color: !isAvailable && "lightgrey" }}>
-              Locatie Delen
-            </Text>
-            <Switch
-              style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }}
-              trackColor={{ true: "#81b0ff" }}
-              thumbColor={isSyncingLocation ? "#f5dd4b" : "#f4f3f4"}
-              ios_backgroundColor="#3e3e3e"
-              onValueChange={toggleLocationSharing}
-              value={isSyncingLocation}
-              disabled={!isAvailable}
-            />
+          <View style={{ flex: 1, alignItems: "center" }}>
+            <Text style={styles.headerTextMedium}>Dashboard</Text>
+          </View>
+          <View style={styles.rightElement}>
+            <View style={styles.profileImageContainer}>
+              {selectedImage && (
+                <Image
+                  source={{ uri: selectedImage }}
+                  style={styles.profileImage}
+                />
+              )}
+            </View>
           </View>
         </View>
-        <CustomButton
-          onPressHandler={() => {
-            SecureStore.deleteItemAsync("user");
-            SecureStore.deleteItemAsync(STORAGE_KEY);
-          }}
-        >
-          Verwijder Gebruiker
-        </CustomButton>
-        <CustomButton onPressHandler={handleUpload}>Kies foto</CustomButton>
-      </View>
-    </View>
+        <View style={{ rowGap: 20 }}>
+          <View style={styles.settingsBar}>
+            <View style={styles.leftElement}>
+              <Text style={styles.headerTextSmall}>Beschikbaarheid</Text>
+            </View>
+            <View style={styles.middleElement}>
+              <Text style={styles.headerTextMedium}>
+                {isAvailable ? "Online" : "Offline"}
+              </Text>
+            </View>
+            <View style={styles.rightElement}>
+              <Switch
+                style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }}
+                trackColor={{ false: "#767577", true: theme.primary }}
+                thumbColor="#fff"
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleAvailability}
+                value={isAvailable}
+              />
+            </View>
+          </View>
+          <View style={styles.settingsBar}>
+            <View style={styles.leftElement}>
+              <Text style={styles.headerTextSmall}>Locatie Delen</Text>
+            </View>
+            <View style={styles.middleElement}>
+              <Text style={styles.headerTextMedium}>
+                {isSyncingLocation ? "Aan" : "Uit"}
+              </Text>
+            </View>
+            <View style={styles.rightElement}>
+              <Switch
+                style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }}
+                trackColor={{
+                  false: isAvailable ? "#767577" : "#e4e3e4",
+                  true: theme.primary,
+                }}
+                thumbColor={isAvailable ? "#fff" : "#f4f3f4"}
+                ios_backgroundColor="#3e3e3e"
+                onValueChange={toggleLocationSharing}
+                value={isSyncingLocation}
+                disabled={!isAvailable}
+              />
+            </View>
+          </View>
+          <MessageBox
+            placeholderText="Status Bericht..."
+            data={taxi.statusText}
+            submitHandler={StatusTextSubmitHandler}
+            deleteHandler={statusTextDeleteHandler}
+            submitButtonColor={theme.confirmButton}
+            deleteButtonColor={theme.deleteButton}
+            undoButtonColor={theme.background}
+            currentData={taxi.statusText}
+          />
+        </View>
+      </Pressable>
+    </SafeAreaView>
   );
 };
 
@@ -139,15 +188,61 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  profileImageContainer: {
-    width: 60,
+  headerContainer: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    marginHorizontal: -5,
     height: 60,
+    padding: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  settingsBar: {
+    backgroundColor: "#fff",
+    borderRadius: 10,
+    height: 60,
+    padding: 15,
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  statusText: {
+    height: 100,
+    textAlignVertical: "top",
+    fontSize: 18,
+    padding: 10,
+  },
+  headerTextSmall: {
+    fontFamily: "OpenSans-regular",
+    fontSize: 16,
+  },
+  headerTextMedium: {
+    fontFamily: "OpenSans-semibold",
+    fontSize: 18,
+  },
+  profileImageContainer: {
+    width: 50,
+    height: 50,
+
     backgroundColor: "red",
-    borderRadius: 60 / 2,
+    borderRadius: 50 / 2,
     overflow: "hidden",
   },
   profileImage: {
     width: "100%",
     aspectRatio: 1,
+  },
+  leftElement: {
+    flex: 3,
+    alignItems: "flex-start",
+  },
+  middleElement: {
+    flex: 1,
+    alignItems: "flex-start",
+  },
+  rightElement: {
+    flex: 1,
+    alignItems: "flex-end",
   },
 });
