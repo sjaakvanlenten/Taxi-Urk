@@ -1,3 +1,4 @@
+import { FC, ReactNode } from "react";
 import {
   GestureResponderEvent,
   Pressable,
@@ -9,8 +10,9 @@ import {
   View,
   ViewStyle,
   ColorValue,
+  DimensionValue,
 } from "react-native";
-import React, { ReactNode } from "react";
+
 import { light } from "../themes/theme";
 
 interface ButtonProps extends PressableProps {
@@ -19,14 +21,15 @@ interface ButtonProps extends PressableProps {
   active?: boolean;
   buttonStyle?: StyleProp<ViewStyle>;
   buttonTextStyle?: StyleProp<TextStyle>;
-  width?: number | string;
-  height?: number | string;
-  color?: string;
+  width?: DimensionValue;
+  height?: DimensionValue;
+  elevation?: number;
+  color?: ColorValue;
   icon?: ReactNode;
   rippleColor?: ColorValue;
 }
 
-const CustomButton = ({
+const CustomButton: FC<ButtonProps> = ({
   children,
   onPressHandler,
   active = true,
@@ -34,10 +37,11 @@ const CustomButton = ({
   buttonTextStyle,
   width,
   height,
+  elevation,
   color,
   icon,
   rippleColor,
-}: ButtonProps) => {
+}) => {
   const activeButtonStyle = active
     ? styles.activeButton
     : styles.disabledButton;
@@ -49,6 +53,7 @@ const CustomButton = ({
     {
       width: width || "auto",
       height: height || "auto",
+      elevation: elevation || 0,
     },
     active && color && { backgroundColor: color },
     buttonStyle,
@@ -79,23 +84,22 @@ export default CustomButton;
 
 const styles = StyleSheet.create({
   buttonContainer: {
-    borderRadius: 20,
-    overflow: "hidden",
     justifyContent: "center",
-    elevation: 1,
   },
   button: {
+    flex: 1,
     flexDirection: "row",
     paddingHorizontal: 10,
-    justifyContent: "space-around",
+    justifyContent: "center",
     alignItems: "center",
   },
   activeButton: {
     backgroundColor: light.black,
   },
   disabledButton: {
-    backgroundColor: "#cccccc",
+    backgroundColor: "#DDDDDD",
     borderColor: "#999999",
+    borderWidth: 1,
   },
   buttonText: {
     fontFamily: "OpenSans-medium",

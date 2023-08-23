@@ -1,28 +1,26 @@
 import { useCallback, useState } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Switch,
-  Image,
-  Keyboard,
-  Pressable,
-} from "react-native";
-import { Feather } from "@expo/vector-icons";
+import { StyleSheet, View, Keyboard, Pressable, Modal } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import Toast from "react-native-root-toast";
+
+import Header from "../../components/TaxiHomeScreen/Header";
+import Main from "../../components/TaxiHomeScreen/Main";
+import Controls from "../../components/TaxiHomeScreen/Controls";
+import ProfileSettings from "../../components/TaxiHomeScreen/profile-settings";
+
+import useTaxiDriverContext from "../../context/taxiDriver-context";
+
+import useImagePicker from "../../hooks/useImagePicker";
+import useFirebaseStorage from "../../hooks/useFirebaseStorage";
+import useLocation from "../../hooks/useLocation";
+import useNotifications from "../../hooks/useNotifications";
+
 import {
   setAvailability,
   setIsSharingLocation,
   setStatusTextDB,
 } from "../../firebase/mutations";
-import useTaxiDriverContext from "../../context/taxiDriver-context";
-import useImagePicker from "../../hooks/useImagePicker";
-import useFirebaseStorage from "../../hooks/useFirebaseStorage";
-import useLocation from "../../hooks/useLocation";
-import useNotifications from "../../hooks/useNotifications";
-import { SafeAreaView } from "react-native-safe-area-context";
-import useTheme from "../../context/theme-context";
-import MessageBox from "../../components/MessageBox";
-import Toast from "react-native-root-toast";
+import { uriToBlob } from "../../utils/uriToBlob";
 
 const TaxiHomeScreen: React.FC = () => {
   const { taxi, setTaxi } = useTaxiDriverContext();
@@ -33,8 +31,6 @@ const TaxiHomeScreen: React.FC = () => {
   const [isSyncingLocation, setIsSyncingLocation] = useState(
     taxi.isSharingLocation
   );
-
-  const { theme } = useTheme();
 
   const [errorMsg] = useLocation(isSyncingLocation);
 
@@ -62,8 +58,7 @@ const TaxiHomeScreen: React.FC = () => {
 
       const imageName = `${taxi.id}.png`;
 
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
+      const blob = await uriToBlob(imageUri);
 
       await uploadFile(blob, imageName);
     } catch (error) {
@@ -71,7 +66,7 @@ const TaxiHomeScreen: React.FC = () => {
     }
   };
 
-  const StatusTextSubmitHandler = useCallback(
+  const statusTextSubmitHandler = useCallback(
     (text: string) => {
       setStatusTextDB(taxi.id, text);
       setTaxi({
@@ -93,86 +88,56 @@ const TaxiHomeScreen: React.FC = () => {
     });
   }, [taxi]);
 
+  const [isModalVisible, setIsModalVisible] = useState(false);
+
+  const toggleModal = () => {
+    setIsModalVisible((prev) => !prev);
+  };
+
   return (
     <SafeAreaView style={{ flex: 1 }}>
+      {/* Modal */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => {
+          setIsModalVisible((prev) => !prev);
+        }}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <ProfileSettings
+              uploadImageHandler={handleUpload}
+              selectedImage={selectedImage}
+            />
+          </View>
+        </View>
+      </Modal>
+
+      {/* Screen is pressable to dissmiss keyboard */}
       <Pressable
-        style={{ flex: 1, padding: 10, justifyContent: "space-between" }}
+        style={{ flex: 1 }}
         onPress={() => {
           Keyboard.dismiss();
         }}
       >
-        <View style={[styles.headerContainer, { marginHorizontal: -5 }]}>
-          <View style={{ flex: 1, alignItems: "flex-start" }}>
-            <Feather name="menu" size={26} color="black" />
-          </View>
-          <View style={{ flex: 1, alignItems: "center" }}>
-            <Text style={styles.headerTextMedium}>Dashboard</Text>
-          </View>
-          <View style={styles.rightElement}>
-            <View style={styles.profileImageContainer}>
-              {selectedImage && (
-                <Image
-                  source={{ uri: selectedImage }}
-                  style={styles.profileImage}
-                />
-              )}
-            </View>
-          </View>
+        {/* Content */}
+        <View style={styles.content}>
+          <Header pressableCallback={toggleModal} image={selectedImage} />
+          <Main />
         </View>
-        <View style={{ rowGap: 20 }}>
-          <View style={styles.settingsBar}>
-            <View style={styles.leftElement}>
-              <Text style={styles.headerTextSmall}>Beschikbaarheid</Text>
-            </View>
-            <View style={styles.middleElement}>
-              <Text style={styles.headerTextMedium}>
-                {isAvailable ? "Online" : "Offline"}
-              </Text>
-            </View>
-            <View style={styles.rightElement}>
-              <Switch
-                style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }}
-                trackColor={{ false: "#767577", true: theme.primary }}
-                thumbColor="#fff"
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleAvailability}
-                value={isAvailable}
-              />
-            </View>
-          </View>
-          <View style={styles.settingsBar}>
-            <View style={styles.leftElement}>
-              <Text style={styles.headerTextSmall}>Locatie Delen</Text>
-            </View>
-            <View style={styles.middleElement}>
-              <Text style={styles.headerTextMedium}>
-                {isSyncingLocation ? "Aan" : "Uit"}
-              </Text>
-            </View>
-            <View style={styles.rightElement}>
-              <Switch
-                style={{ transform: [{ scaleX: 1.5 }, { scaleY: 1.5 }] }}
-                trackColor={{
-                  false: isAvailable ? "#767577" : "#e4e3e4",
-                  true: theme.primary,
-                }}
-                thumbColor={isAvailable ? "#fff" : "#f4f3f4"}
-                ios_backgroundColor="#3e3e3e"
-                onValueChange={toggleLocationSharing}
-                value={isSyncingLocation}
-                disabled={!isAvailable}
-              />
-            </View>
-          </View>
-          <MessageBox
-            placeholderText="Status Bericht..."
-            data={taxi.statusText}
-            submitHandler={StatusTextSubmitHandler}
-            deleteHandler={statusTextDeleteHandler}
-            submitButtonColor={theme.confirmButton}
-            deleteButtonColor={theme.deleteButton}
-            undoButtonColor={theme.background}
-            currentData={taxi.statusText}
+
+        {/* Bottom Section */}
+        <View style={styles.bottomSection}>
+          <Controls
+            statusText={taxi.statusText}
+            isAvailable={isAvailable}
+            isSyncingLocation={isSyncingLocation}
+            toggleAvailability={toggleAvailability}
+            toggleLocationSharing={toggleLocationSharing}
+            statusTextDeleteHandler={statusTextDeleteHandler}
+            statusTextSubmitHandler={statusTextSubmitHandler}
           />
         </View>
       </Pressable>
@@ -183,66 +148,33 @@ const TaxiHomeScreen: React.FC = () => {
 export default TaxiHomeScreen;
 
 const styles = StyleSheet.create({
-  container: {
+  modalContainer: {
     flex: 1,
-    justifyContent: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.2)",
+  },
+  modalView: {
+    marginTop: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    paddingTop: 35,
+    paddingBottom: 20,
+    paddingHorizontal: 15,
     alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
-  headerContainer: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    marginHorizontal: -5,
-    height: 60,
-    padding: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  settingsBar: {
-    backgroundColor: "#fff",
-    borderRadius: 10,
-    height: 60,
-    padding: 15,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-  },
-  statusText: {
-    height: 100,
-    textAlignVertical: "top",
-    fontSize: 18,
-    padding: 10,
-  },
-  headerTextSmall: {
-    fontFamily: "OpenSans-regular",
-    fontSize: 16,
-  },
-  headerTextMedium: {
-    fontFamily: "OpenSans-semibold",
-    fontSize: 18,
-  },
-  profileImageContainer: {
-    width: 50,
-    height: 50,
-
-    backgroundColor: "red",
-    borderRadius: 50 / 2,
-    overflow: "hidden",
-  },
-  profileImage: {
-    width: "100%",
-    aspectRatio: 1,
-  },
-  leftElement: {
-    flex: 3,
-    alignItems: "flex-start",
-  },
-  middleElement: {
+  content: {
     flex: 1,
-    alignItems: "flex-start",
+    rowGap: 20,
   },
-  rightElement: {
+  bottomSection: {
     flex: 1,
-    alignItems: "flex-end",
+    justifyContent: "flex-end",
   },
 });

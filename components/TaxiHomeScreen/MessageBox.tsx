@@ -1,3 +1,4 @@
+import { FC, useEffect, useRef, useState } from "react";
 import {
   Keyboard,
   NativeSyntheticEvent,
@@ -6,10 +7,11 @@ import {
   TextInputContentSizeChangeEventData,
   View,
 } from "react-native";
-import CustomButton from "./CustomButton";
-import { FC, useEffect, useRef, useState } from "react";
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
+
+import CustomButton from "../CustomButton";
+
 interface MessageBoxProps {
   placeholderText?: string;
   data?: string;
@@ -26,8 +28,6 @@ const MessageBox: FC<MessageBoxProps> = ({
   data,
   submitHandler,
   deleteHandler,
-  undoButtonColor,
-  deleteButtonColor,
   submitButtonColor,
   currentData,
 }) => {
@@ -73,7 +73,7 @@ const MessageBox: FC<MessageBoxProps> = ({
 
   return (
     <View style={styles.messageBox}>
-      {data.length > 0 && (
+      {data?.length > 0 && (
         <CustomButton
           onPressHandler={handleDelete}
           icon={
@@ -112,15 +112,19 @@ const MessageBox: FC<MessageBoxProps> = ({
             onPressHandler={handleClearInput}
             icon={<Ionicons name="md-close-sharp" size={20} color="#696969" />}
             height={28}
+            elevation={1}
             color="#ffffff"
             buttonTextStyle={{ fontSize: 12 }}
+            buttonStyle={{ borderRadius: 10 }}
           />
           <CustomButton
             onPressHandler={handleUndo}
             icon={<FontAwesome name="undo" size={18} color="#696969" />}
             color="#ffffff"
             height={28}
+            elevation={1}
             buttonTextStyle={{ fontSize: 12 }}
+            buttonStyle={{ borderRadius: 10 }}
           />
           <CustomButton
             onPressHandler={handleSubmit}
@@ -130,6 +134,7 @@ const MessageBox: FC<MessageBoxProps> = ({
               <Ionicons
                 name="checkmark-circle-outline"
                 size={22}
+                elevation={1}
                 color={statusText !== data ? "white" : "#666666"}
                 style={{ marginRight: 8 }}
               />
@@ -137,6 +142,7 @@ const MessageBox: FC<MessageBoxProps> = ({
             rippleColor={submitButtonColor}
             color={submitButtonColor}
             buttonTextStyle={{ fontSize: 14 }}
+            buttonStyle={{ borderRadius: 10 }}
           >
             Opslaan
           </CustomButton>
@@ -150,6 +156,7 @@ export default MessageBox;
 
 const styles = StyleSheet.create({
   messageBox: {
+    elevation: 5,
     backgroundColor: "#fff",
     borderRadius: 10,
   },

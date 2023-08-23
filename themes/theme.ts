@@ -2,7 +2,7 @@ import { mapStyle } from "../mapStyle";
 
 export const light = {
   name: "light",
-  primary: "#f7b731",
+  primary: "#FFA726",
   background: "#f9b55a",
   listItemBackground: "#f2f2f2",
   iconBackGround: "#f2f2f2",

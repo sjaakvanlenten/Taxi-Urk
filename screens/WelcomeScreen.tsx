@@ -13,6 +13,7 @@ import Animated, {
 import { light } from "../themes/theme";
 import LeftNavButton from "../components/buttons/navButtons/LeftNavButton";
 import RightNavButton from "../components/buttons/navButtons/RightNavButton";
+import useTheme from "../context/theme-context";
 
 enum Direction {
   left,
@@ -24,6 +25,7 @@ const { width: SCREEN_WIDTH } = Dimensions.get("window");
 const WelcomeScreen = () => {
   const navigation =
     useNavigation<RootStackScreenProps<"Welcome">["navigation"]>();
+  const { theme } = useTheme();
 
   const translate_X_Right = useSharedValue(-100);
   const translate_X_Left = useSharedValue(SCREEN_WIDTH);
@@ -58,7 +60,13 @@ const WelcomeScreen = () => {
   });
 
   return (
-    <View style={{ flex: 1, justifyContent: "center" }}>
+    <View
+      style={{
+        flex: 1,
+        justifyContent: "center",
+        backgroundColor: theme.primary,
+      }}
+    >
       <View style={styles.container}>
         <Animated.View style={rLeftButtonStyle}>
           <Pressable

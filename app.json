@@ -26,6 +26,7 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#FFFFFF"
       },
+      "softwareKeyboardLayoutMode": "pan",
       "package": "com.sjaakvanlenten.TaxiUrk",
       "permissions": ["ACCESS_BACKGROUND_LOCATION"]
     },

@@ -1,3 +1,5 @@
+import { Control } from "react-hook-form";
+
 export type Taxi = {
   id: string;
   isSharingLocation: boolean;
@@ -6,4 +8,8 @@ export type Taxi = {
   phone: string;
   image: string;
   statusText?: string;
+  carModel?: string;
+  totalPassengerSeats?: string;
 };
+
+export type MyControlType<T> = Control<T, any>;

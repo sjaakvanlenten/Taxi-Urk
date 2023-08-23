@@ -80,22 +80,25 @@ export default function AppBootstrap({ children }) {
   const { setTaxi } = useTaxiDriverContext();
   const userId = useRetrieveUserId();
   const fontsLoaded = useLoadFonts();
+  const [userIdRetrieved, setUserIdRetrieved] = useState(false);
 
   useLayoutEffect(() => {
     const hideSplashScreen = async () => {
-      if (appIsReady) {
+      if (userIdRetrieved) {
         await SplashScreen.hideAsync();
       }
     };
 
     hideSplashScreen();
-  }, [appIsReady]);
+  }, [userIdRetrieved]);
 
   useEffect(() => {
     const prepare = async () => {
       if (userId) {
         await fetchTaxiData(userId, setTaxi);
-        setAppIsReady(true);
+        setUserIdRetrieved(true);
+      } else {
+        setUserIdRetrieved(true);
       }
 
       // Other initialization tasks can be added here
@@ -104,20 +107,13 @@ export default function AppBootstrap({ children }) {
     prepare();
   }, [userId, setTaxi]);
 
-  if (!fontsLoaded || !appIsReady) {
+  if (!fontsLoaded || !userIdRetrieved) {
     return null;
   }
 
   return (
-    <View style={styles.container} onLayout={() => {}}>
+    <View style={{ flex: 1 }} onLayout={() => {}}>
       {children}
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    backgroundColor: light.primary,
-    flex: 1,
-  },
-});

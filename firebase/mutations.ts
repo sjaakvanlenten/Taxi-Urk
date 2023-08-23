@@ -1,7 +1,8 @@
 import { LocationObjectCoords } from "expo-location";
-import { push, ref, set, update } from "firebase/database";
+import { get, push, ref, set, update } from "firebase/database";
 import { FormData } from "../screens/Taxi/CreateNewTaxiScreen";
 import { db } from "./firebaseConfig";
+import { queryByPhoneNumber } from "./queries";
 
 export const pushNewTaxiRef = async (data: FormData) => {
   const reference = await push(ref(db, "taxis"), {
@@ -46,4 +47,44 @@ export const setStatusTextDB = (taxiRef: string, text: string) => {
   const updates = {};
   updates["/taxis/" + taxiRef + "/statusText"] = text;
   update(ref(db), updates);
+};
+
+export const updateName = async (taxiRef: string, text: string) => {
+  try {
+    const updates = {};
+    updates["/taxis/" + taxiRef + "/name"] = text;
+    await update(ref(db), updates);
+    // The update operation was successful, you can handle any additional actions here if needed.
+  } catch (error) {
+    console.error("Error updating name:", error);
+    // Handle the error if the update operation fails.
+  }
+};
+
+export const updatePhone = (taxiRef: string, text: string) => {
+  const query = queryByPhoneNumber(text);
+
+  get(query).then(async (snapshot) => {
+    if (!snapshot.exists()) {
+      try {
+        const updates = {};
+        updates["/taxis/" + taxiRef + "/phone"] = text;
+        await update(ref(db), updates);
+        // The update operation was successful, you can handle any additional actions here if needed.
+      } catch (error) {
+        console.error("Error updating Phone:", error);
+        // Handle the error if the update operation fails.
+      }
+    } else {
+      return "Dit telefoonnumer is al geregistreerd";
+    }
+  });
+};
+
+export const setCarModel = (taxiRef: string, text: string) => {
+  set(ref(db, "taxis/" + taxiRef + "/carModel"), text);
+};
+
+export const setTotalPassengerSeats = (taxiRef: string, text: string) => {
+  set(ref(db, "taxis/" + taxiRef + "/totalPassengerSeats"), text);
 };

@@ -10,7 +10,7 @@ import {
 
 import { get } from "firebase/database";
 import { useNavigation } from "@react-navigation/native";
-import { useForm, FieldValues, useFormState } from "react-hook-form";
+import { useForm, useFormState } from "react-hook-form";
 import * as SecureStore from "expo-secure-store";
 import { Feather } from "@expo/vector-icons";
 
@@ -23,8 +23,9 @@ import { pushNewTaxiRef } from "../../firebase/mutations";
 import { resetNavigationState } from "../../navigation/actions";
 import { light } from "../../themes/theme";
 import useTaxiDriverContext from "../../context/taxiDriver-context";
+import useTheme from "../../context/theme-context";
 
-export interface FormData extends FieldValues {
+export interface FormData {
   name: string;
   phoneNumber: string;
 }
@@ -32,6 +33,7 @@ export interface FormData extends FieldValues {
 const { width: SCREEN_WIDTH } = Dimensions.get("window");
 
 const CreateNewTaxiScreen: React.FC = () => {
+  const { theme } = useTheme();
   const {
     control,
     handleSubmit,
@@ -95,12 +97,12 @@ const CreateNewTaxiScreen: React.FC = () => {
     scrollRef.current?.scrollTo({ x: 0 });
   }, []);
 
-  const onSubmit = (data: FormData) => addTaxiUserToDatabase(data);
+  const submitHandler = (data: FormData) => addTaxiUserToDatabase(data);
 
   return (
     <ScrollView
       ref={scrollRef}
-      style={{ flex: 1 }}
+      style={{ flex: 1, backgroundColor: theme.primary }}
       horizontal
       pagingEnabled
       scrollEnabled={false}
@@ -110,9 +112,17 @@ const CreateNewTaxiScreen: React.FC = () => {
         <View style={styles.headerContainer}>
           <Text style={styles.headerText}>Wat is je naam?</Text>
 
-          <CustomInput name="name" placeholder="Naam" control={control} />
+          <CustomInput
+            name="name"
+            placeholder="Naam"
+            control={control}
+            style={styles.input}
+          />
         </View>
         <CustomButton
+          height={40}
+          color={theme.black}
+          buttonStyle={{ borderRadius: 10 }}
           onPressHandler={onButtonPressHandler}
           active={watchNameValue ? watchNameValue.length > 1 : false}
         >
@@ -135,8 +145,9 @@ const CreateNewTaxiScreen: React.FC = () => {
             <CustomInput
               name="phoneNumber"
               placeholder="06..."
+              style={styles.input}
               rules={{
-                required: "Geef een geldig telefoonnumer op",
+                required: "Geef een geldig telefoonnummer op",
 
                 pattern: {
                   value: /^((\+316|06|00316){1}\s?-?\s?[1-9]{1}[0-9]{7})$/,
@@ -145,10 +156,19 @@ const CreateNewTaxiScreen: React.FC = () => {
               }}
               control={control}
             />
+            {/* Error message */}
+            {errors.phoneNumber && (
+              <Text style={styles.errorMessage}>
+                {errors.phoneNumber?.message?.toString() || "Error"}
+              </Text>
+            )}
           </View>
           <CustomButton
-            onPressHandler={handleSubmit(onSubmit)}
+            onPressHandler={handleSubmit(submitHandler)}
             active={isValid}
+            color={theme.black}
+            buttonStyle={{ borderRadius: 10 }}
+            height={40}
           >
             Aanmaken
           </CustomButton>
@@ -180,18 +200,33 @@ const styles = StyleSheet.create({
     top: 25,
     left: 10,
   },
+  input: {
+    backgroundColor: "white",
+    borderColor: light.greyBorder,
+    borderWidth: 2,
+    borderRadius: 20,
+    fontSize: 15,
+    fontFamily: "OpenSans-semibold",
+    alignSelf: "stretch",
+    color: "black",
+    padding: 10,
+    marginVertical: 5,
+  },
   headerContainer: {
-    width: "100%",
+    flex: 1,
     alignItems: "center",
   },
   headerText: {
     fontSize: 22,
     fontFamily: "OpenSans-semibold",
     marginBottom: 20,
+
+    alignSelf: "stretch",
+    textAlign: "center",
   },
-  errorText: {
-    color: "red",
-    fontFamily: "sans-serif",
+  errorMessage: {
+    color: "#B71C1C",
+    marginTop: 5,
     fontSize: 14,
   },
 });

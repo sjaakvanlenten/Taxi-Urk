@@ -10,12 +10,6 @@ const useImagePicker = () => {
 
   useEffect(() => {
     (async () => {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        setErrorMessage("Toegang tot media geweigerd.");
-      }
-
       const storedImage = await SecureStore.getItemAsync(STORAGE_KEY);
       if (storedImage) {
         setSelectedImage(storedImage);
@@ -23,8 +17,23 @@ const useImagePicker = () => {
     })();
   }, []);
 
+  const requestPermissions = async () => {
+    const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (status !== "granted") {
+      setErrorMessage("Toegang tot media geweigerd.");
+      return false;
+    }
+    return true;
+  };
+
   const handleImagePicker = async () => {
     try {
+      const permissionsGranted = await requestPermissions();
+
+      if (!permissionsGranted) {
+        return;
+      }
+
       const result = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         allowsEditing: true,

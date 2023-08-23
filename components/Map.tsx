@@ -6,9 +6,9 @@ import { View, StyleSheet, Image, Text } from "react-native";
 import { Taxi } from "../types/typings";
 
 type MapProps = {
-  data: locationData[];
-  enableInteraction: boolean;
-  taxis: Taxi[];
+  data?: locationData[];
+  enableInteraction?: boolean;
+  taxis?: Taxi[];
 };
 
 const Map = ({ data, enableInteraction, taxis }: MapProps) => {
@@ -29,8 +29,8 @@ const Map = ({ data, enableInteraction, taxis }: MapProps) => {
         longitudeDelta: 0.045,
       }}
     >
-      {data.length !== 0 &&
-        data.map((location) => {
+      {data?.length !== 0 &&
+        data?.map((location) => {
           const { name, image: imageUri } = taxis.find(
             ({ id: taxiId }) => taxiId === location.id
           );

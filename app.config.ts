@@ -6,6 +6,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
     slug: "Taxi-Urk",
     name: "Taxi-Urk",
     android: {
+      package: "com.sjaakvanlenten.TaxiUrk",
       config: {
         googleMaps: {
           apiKey: GOOGLE_API_KEY,
