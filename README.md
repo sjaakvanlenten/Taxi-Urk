@@ -15,10 +15,18 @@
 - React Native Maps
 
 ## Screenshots
+Client:
 <p float="left">
-<img src="./screenshots/client-light.png" width="270" height="600">
-<img src="./screenshots/client-dark.png" width="270" height="600">
-<img src="./screenshots/client-dark-full-map.png" width="270" height="600">
+<img src="./screenshots/client-light.png" width="270" height="585">
+<img src="./screenshots/client-dark.png" width="270" height="585">
+<img src="./screenshots/client-dark-full-map.png" width="270" height="585">
+</p>
+
+Taxi Driver:
+<p float="left">
+<img src="./screenshots/Driver-edit-status_text.png" width="270" height="585">
+<img src="./screenshots/driver.png" width="270" height="585">
+<img src="./screenshots/driver-profile.png" width="270" height="585">
 </p>
 
 
