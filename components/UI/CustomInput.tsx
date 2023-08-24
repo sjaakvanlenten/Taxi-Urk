@@ -1,7 +1,7 @@
 import { TextInput, TextInputProps as RNTextInputProps } from "react-native";
 import { Controller } from "react-hook-form";
 import { forwardRef } from "react";
-import { MyControlType } from "../types/typings";
+import { MyControlType } from "../../types/typings";
 
 interface InputProps<T>
   extends Omit<RNTextInputProps, "defaultValue" | "onChange"> {

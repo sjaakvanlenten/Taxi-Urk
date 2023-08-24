@@ -3,10 +3,10 @@ import { StyleSheet, View, Keyboard, Pressable, Modal } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import Toast from "react-native-root-toast";
 
-import Header from "../../components/TaxiHomeScreen/Header";
-import Main from "../../components/TaxiHomeScreen/Main";
-import Controls from "../../components/TaxiHomeScreen/Controls";
-import ProfileSettings from "../../components/TaxiHomeScreen/profile-settings";
+import Header from "../../components/TaxiDriver/Header";
+import Main from "../../components/TaxiDriver/Main";
+import Controls from "../../components/TaxiDriver/Controls";
+import ProfileSettings from "../../components/TaxiDriver/profile-settings";
 
 import useTaxiDriverContext from "../../context/taxiDriver-context";
 

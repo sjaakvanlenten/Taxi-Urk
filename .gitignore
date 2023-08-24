@@ -11,7 +11,7 @@ npm-debug.*
 *.orig.*
 *.firebaserc
 web-build/
-*.env
+.env*
 jest-setup.js
 
 # macOS

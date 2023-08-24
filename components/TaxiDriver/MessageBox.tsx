@@ -10,7 +10,7 @@ import {
 import { Ionicons, FontAwesome } from "@expo/vector-icons";
 import { MaterialIcons } from "@expo/vector-icons";
 
-import CustomButton from "../CustomButton";
+import CustomButton from "../UI/CustomButton";
 
 interface MessageBoxProps {
   placeholderText?: string;

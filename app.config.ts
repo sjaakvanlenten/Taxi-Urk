@@ -1,5 +1,4 @@
 import { ExpoConfig, ConfigContext } from "expo/config";
-import { GOOGLE_API_KEY } from "react-native-dotenv";
 export default ({ config }: ConfigContext): ExpoConfig => {
   return {
     ...config,
@@ -9,7 +8,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       package: "com.sjaakvanlenten.TaxiUrk",
       config: {
         googleMaps: {
-          apiKey: GOOGLE_API_KEY,
+          apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
         },
       },
     },

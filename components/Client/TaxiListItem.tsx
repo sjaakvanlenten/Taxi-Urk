@@ -6,10 +6,10 @@ import * as Linking from "expo-linking";
 import * as Haptics from "expo-haptics";
 
 import { DataSnapshot, ref } from "firebase/database";
-import { db } from "../firebase/firebaseConfig";
+import { db } from "../../firebase/firebaseConfig";
 import { LatLng } from "react-native-maps";
-import useTheme from "../context/theme-context";
-import useFirebaseListener from "../hooks/useFirebaseListener";
+import useTheme from "../../context/theme-context";
+import useFirebaseListener from "../../hooks/useFirebaseListener";
 import Animated, {
   Easing,
   useAnimatedStyle,

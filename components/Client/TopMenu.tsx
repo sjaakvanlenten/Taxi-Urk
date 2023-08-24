@@ -5,7 +5,7 @@ import Animated, {
   useSharedValue,
   withTiming,
 } from "react-native-reanimated";
-import MenuButton from "./buttons/MenuButton";
+import MenuButton from "../UI/MenuButton";
 
 type TopMenuProps = {
   children?: ReactNode;

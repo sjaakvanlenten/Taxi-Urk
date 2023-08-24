@@ -10,10 +10,10 @@ import { Feather } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 
-import BottomSheet from "../../components/BottomSheet";
-import TaxiListItem from "../../components/TaxiListItem";
-import Map from "../../components/Map";
-import TopMenu from "../../components/TopMenu";
+import BottomSheet from "../../components/Client/BottomSheet";
+import TaxiListItem from "../../components/Client/TaxiListItem";
+import Map from "../../components/Client/Map";
+import TopMenu from "../../components/Client/TopMenu";
 
 import { sortByAvailability } from "../../firebase/queries";
 

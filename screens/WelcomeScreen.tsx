@@ -11,8 +11,8 @@ import Animated, {
 } from "react-native-reanimated";
 
 import { light } from "../themes/theme";
-import LeftNavButton from "../components/buttons/navButtons/LeftNavButton";
-import RightNavButton from "../components/buttons/navButtons/RightNavButton";
+import LeftNavButton from "../components/UI/navButtons/LeftNavButton";
+import RightNavButton from "../components/UI/navButtons/RightNavButton";
 import useTheme from "../context/theme-context";
 
 enum Direction {

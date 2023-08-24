@@ -1,4 +1,4 @@
-import { mapStyle } from "../mapStyle";
+import { mapStyle } from "../google-maps/mapStyle";
 
 export const light = {
   name: "light",

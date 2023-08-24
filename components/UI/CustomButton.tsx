@@ -13,7 +13,7 @@ import {
   DimensionValue,
 } from "react-native";
 
-import { light } from "../themes/theme";
+import { light } from "../../themes/theme";
 
 interface ButtonProps extends PressableProps {
   children?: ReactNode;

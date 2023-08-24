@@ -16,8 +16,8 @@ import { Feather } from "@expo/vector-icons";
 
 import { queryByPhoneNumber } from "../../firebase/queries";
 import { RootStackScreenProps } from "../../navigation/types";
-import CustomButton from "../../components/CustomButton";
-import CustomInput from "../../components/CustomInput";
+import CustomButton from "../../components/UI/CustomButton";
+import CustomInput from "../../components/UI/CustomInput";
 
 import { pushNewTaxiRef } from "../../firebase/mutations";
 import { resetNavigationState } from "../../navigation/actions";

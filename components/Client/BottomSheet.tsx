@@ -9,7 +9,7 @@ import Animated, {
   withSpring,
 } from "react-native-reanimated";
 import { Gesture, GestureDetector } from "react-native-gesture-handler";
-import useTheme from "../context/theme-context";
+import useTheme from "../../context/theme-context";
 
 type BottomSheetProps = {
   children: ReactNode;

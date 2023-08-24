@@ -15,7 +15,10 @@ const Header: FC<HeaderProps> = ({ pressableCallback, image }) => {
   return (
     <View style={styles.headerContainer}>
       <View style={styles.profileImageContainer}>
-        {image && <Image source={{ uri: image }} style={styles.profileImage} />}
+        <Image
+          source={{ uri: image ? image : "https://i.pravatar.cc/150?img=66" }}
+          style={styles.profileImage}
+        />
       </View>
 
       <Text style={styles.headerText}>Welkom</Text>

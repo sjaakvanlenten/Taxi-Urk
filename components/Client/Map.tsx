@@ -1,9 +1,8 @@
-import React from "react";
 import MapView, { Callout, Marker, PROVIDER_GOOGLE } from "react-native-maps";
-import useTheme from "../context/theme-context";
-import { locationData } from "../screens/Client/ClientHomeScreen";
+import useTheme from "../../context/theme-context";
+import { locationData } from "../../screens/Client/ClientHomeScreen";
 import { View, StyleSheet, Image, Text } from "react-native";
-import { Taxi } from "../types/typings";
+import { Taxi } from "../../types/typings";
 
 type MapProps = {
   data?: locationData[];

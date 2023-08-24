@@ -1,9 +1,9 @@
-import { FC, useState } from "react";
+import { FC } from "react";
 import { StyleSheet, View, Image } from "react-native";
 import { MaterialCommunityIcons, MaterialIcons } from "@expo/vector-icons";
 
-import CustomButton from "../CustomButton";
-import EditableText from "../EditableText";
+import CustomButton from "../UI/CustomButton";
+import EditableText from "../UI/EditableText";
 
 import useTheme from "../../context/theme-context";
 import useTaxiDriverContext from "../../context/taxiDriver-context";
@@ -27,8 +27,6 @@ const ProfileSettings: FC<ProfileSettingsProps> = ({
   const { theme } = useTheme();
   const { taxi, setTaxi } = useTaxiDriverContext();
 
-  const [isModalVisible, setIsModalVisible] = useState(false);
-
   return (
     <View
       style={{
@@ -47,17 +45,19 @@ const ProfileSettings: FC<ProfileSettingsProps> = ({
             style={[
               styles.profileImageContainer,
               {
-                backgroundColor: theme.confirmButton,
+                backgroundColor: theme.primary,
                 borderColor: theme.primary,
               },
             ]}
           >
-            {selectedImage && (
-              <Image
-                source={{ uri: selectedImage }}
-                style={styles.profileImage}
-              />
-            )}
+            <Image
+              source={{
+                uri: selectedImage
+                  ? selectedImage
+                  : "https://i.pravatar.cc/150?img=66",
+              }}
+              style={styles.profileImage}
+            />
           </View>
           <CustomButton
             onPressHandler={uploadImageHandler}

@@ -1,8 +1,8 @@
 import { StyleSheet, Platform, View, Text, TextInput } from "react-native";
 import { FC, useEffect, useRef } from "react";
 import * as Linking from "expo-linking";
-import CustomButton from "../CustomButton";
-import CustomInput from "../CustomInput";
+import CustomButton from "../UI/CustomButton";
+import CustomInput from "../UI/CustomInput";
 import { useForm } from "react-hook-form";
 import { Ionicons } from "@expo/vector-icons";
 
