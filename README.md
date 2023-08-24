@@ -22,8 +22,3 @@
 </p>
 
 
-<p float="left">
-<img src="./screenshots/Driver-edit-status_text.png" width="500" height="520">
-<img src="./screenshots/driver.png" width="270" height="520">
-<img src="./screenshots/driver-profile.png" width="270" height="520">
-</p>
