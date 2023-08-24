@@ -16,9 +16,9 @@
 
 ## Screenshots
 <p float="left">
-<img src="./screenshots/client-light.png" width="270" height="480">
-<img src="./screenshots/client-dark.png" width="270" height="480">
-<img src="./screenshots/client-dark-full-map.png" width="270" height="480">
+<img src="./screenshots/client-light.png" width="270" height="600">
+<img src="./screenshots/client-dark.png" width="270" height="600">
+<img src="./screenshots/client-dark-full-map.png" width="270" height="600">
 </p>
 
 
