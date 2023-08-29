@@ -29,7 +29,12 @@
       },
       "softwareKeyboardLayoutMode": "pan",
       "package": "com.sjaakvanlenten.TaxiUrk",
-      "permissions": ["ACCESS_BACKGROUND_LOCATION"]
+      "permissions": ["ACCESS_BACKGROUND_LOCATION"],
+      "config": {
+        "googleMaps": {
+          "apiKey": "$GOOGLE_API_KEY"
+        }
+      }
     },
     "web": {
       "favicon": "./assets/favicon.png"

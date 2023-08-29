@@ -8,7 +8,7 @@ export default ({ config }: ConfigContext): ExpoConfig => {
       package: "com.sjaakvanlenten.TaxiUrk",
       config: {
         googleMaps: {
-          apiKey: process.env.EXPO_PUBLIC_GOOGLE_API_KEY,
+          apiKey: process.env.GOOGLE_API_KEY,
         },
       },
     },

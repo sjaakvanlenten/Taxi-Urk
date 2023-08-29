@@ -5,7 +5,6 @@ import { storage } from "../firebase/firebaseConfig";
 
 const useFirebaseStorage = () => {
   const [uploadProgress, setUploadProgress] = useState<number>(0);
-  const [downloadURL, setDownloadURL] = useState("");
 
   const uploadFile = async (
     fileUri: Blob | Uint8Array | ArrayBuffer,
@@ -34,7 +33,6 @@ const useFirebaseStorage = () => {
   const downloadFile = async (id: string) => {
     const cachedImage = await SecureStore.getItemAsync(id);
     if (cachedImage) {
-      setDownloadURL(cachedImage);
       return cachedImage;
     }
 
@@ -48,12 +46,11 @@ const useFirebaseStorage = () => {
 
     if (imageURI) {
       await SecureStore.setItemAsync(id, imageURI);
-      setDownloadURL(imageURI);
       return imageURI;
     }
   };
 
-  return { uploadFile, uploadProgress, downloadFile, downloadURL };
+  return { uploadFile, uploadProgress, downloadFile };
 };
 
 export default useFirebaseStorage;

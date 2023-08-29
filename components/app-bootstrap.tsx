@@ -1,12 +1,11 @@
 import { useState, useEffect, useLayoutEffect } from "react";
-import { StyleSheet, View } from "react-native";
+import { View, Text } from "react-native";
 
 import * as Font from "expo-font";
 import * as SecureStore from "expo-secure-store";
 import * as SplashScreen from "expo-splash-screen";
 
 import useTaxiDriverContext from "../context/taxiDriver-context";
-import { light } from "../themes/theme";
 import { child, get } from "firebase/database";
 import { taxisRef } from "../firebase/queries";
 import { Taxi } from "../types/typings";
@@ -28,32 +27,27 @@ const fetchTaxiData = async (taxiId: string, setTaxi: (taxi: Taxi) => void) => {
   }
 };
 
-// Custom hook for retrieving the user ID from SecureStore
-const useRetrieveUserId = () => {
-  const [userId, setUserId] = useState<string | null>(null);
+export default function AppBootstrap({ children }) {
+  const { setTaxi } = useTaxiDriverContext();
+  const [isAppReady, setIsAppReady] = useState(false);
+  const [errorMessage, setErrorMessage] = useState(null); // New state for error message
 
-  useEffect(() => {
-    const retrieveUserId = async () => {
-      try {
-        const userId = await SecureStore.getItemAsync("user");
-        setUserId(userId);
-      } catch (error) {
-        console.error(error);
+  useLayoutEffect(() => {
+    const hideSplashScreen = async () => {
+      if (isAppReady) {
+        await SplashScreen.hideAsync();
       }
     };
 
-    retrieveUserId();
-  }, []);
-
-  return userId;
-};
-
-const useLoadFonts = () => {
-  const [fontsLoaded, setFontsLoaded] = useState(false);
+    hideSplashScreen();
+  }, [isAppReady]);
 
   useEffect(() => {
-    const loadFontsAsync = async () => {
+    const prepare = async () => {
       try {
+        const userId = await SecureStore.getItemAsync("user");
+        await fetchTaxiData(userId, setTaxi);
+
         await Font.loadAsync({
           "OpenSans-light": require("../assets/fonts/OpenSans/OpenSans-Light.ttf"),
           "OpenSans-regular": require("../assets/fonts/OpenSans/OpenSans-Regular.ttf"),
@@ -62,58 +56,28 @@ const useLoadFonts = () => {
           "OpenSans-semibold": require("../assets/fonts/OpenSans/OpenSans-SemiBold.ttf"),
           "OpenSans-extrabold": require("../assets/fonts/OpenSans/OpenSans-ExtraBold.ttf"),
         });
+
+        setIsAppReady(true);
       } catch (error) {
         console.error(error);
-      } finally {
-        setFontsLoaded(true);
+        setErrorMessage("Er is een fout opgetreden, probeer het nog een keer");
       }
-    };
-
-    loadFontsAsync();
-  }, []);
-
-  return fontsLoaded;
-};
-
-export default function AppBootstrap({ children }) {
-  const [appIsReady, setAppIsReady] = useState(false);
-  const { setTaxi } = useTaxiDriverContext();
-  const userId = useRetrieveUserId();
-  const fontsLoaded = useLoadFonts();
-  const [userIdRetrieved, setUserIdRetrieved] = useState(false);
-
-  useLayoutEffect(() => {
-    const hideSplashScreen = async () => {
-      if (userIdRetrieved) {
-        await SplashScreen.hideAsync();
-      }
-    };
-
-    hideSplashScreen();
-  }, [userIdRetrieved]);
-
-  useEffect(() => {
-    const prepare = async () => {
-      if (userId) {
-        await fetchTaxiData(userId, setTaxi);
-        setUserIdRetrieved(true);
-      } else {
-        setUserIdRetrieved(true);
-      }
-
-      // Other initialization tasks can be added here
     };
 
     prepare();
-  }, [userId, setTaxi]);
+  }, []);
 
-  if (!fontsLoaded || !userIdRetrieved) {
+  if (errorMessage) {
+    return (
+      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+        <Text>{errorMessage}</Text>
+      </View>
+    );
+  }
+
+  if (!isAppReady) {
     return null;
   }
 
-  return (
-    <View style={{ flex: 1 }} onLayout={() => {}}>
-      {children}
-    </View>
-  );
+  return <>{children}</>;
 }

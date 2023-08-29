@@ -1,5 +1,5 @@
 import { Image, Pressable, StyleSheet, Text, View } from "react-native";
-import { useState, useEffect, FC } from "react";
+import { useState, useEffect, FC, memo } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 import * as Linking from "expo-linking";
@@ -173,7 +173,7 @@ const TaxiListItem: FC<TaxiListItemProps> = ({
   );
 };
 
-export default TaxiListItem;
+export default memo(TaxiListItem);
 
 const styles = StyleSheet.create({
   itemContainer: {
